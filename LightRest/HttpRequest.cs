@@ -22,6 +22,12 @@ namespace LightRest
             return this;
         }
 
+        public HttpRequest SetUrl(string url)
+        {
+            httpRequest.RequestUri = new Uri(url);
+            return this;
+        }
+
         public HttpRequest MakeParametersUrlEncoded()
         {
             if (_parameters is null)

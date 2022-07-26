@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "D:\\github\\lightRest\\LightRest.Test\\LightRest.Test.csproj": {}
+    "D:\\github\\LightRest\\LightRest.Test\\LightRest.Test.csproj": {}
   },
   "projects": {
-    "D:\\github\\lightRest\\LightRest.Test\\LightRest.Test.csproj": {
+    "D:\\github\\LightRest\\LightRest.Test\\LightRest.Test.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\github\\lightRest\\LightRest.Test\\LightRest.Test.csproj",
+        "projectUniqueName": "D:\\github\\LightRest\\LightRest.Test\\LightRest.Test.csproj",
         "projectName": "LightRest.Test",
-        "projectPath": "D:\\github\\lightRest\\LightRest.Test\\LightRest.Test.csproj",
+        "projectPath": "D:\\github\\LightRest\\LightRest.Test\\LightRest.Test.csproj",
         "packagesPath": "C:\\Users\\Lucas\\.nuget\\packages\\",
         "outputPath": "D:\\github\\LightRest\\LightRest.Test\\obj\\",
         "projectStyle": "PackageReference",
@@ -28,8 +28,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\github\\lightRest\\LightRest\\LightRest.csproj": {
-                "projectPath": "D:\\github\\lightRest\\LightRest\\LightRest.csproj"
+              "D:\\github\\LightRest\\LightRest\\LightRest.csproj": {
+                "projectPath": "D:\\github\\LightRest\\LightRest\\LightRest.csproj"
               }
             }
           }
@@ -84,12 +84,12 @@
         }
       }
     },
-    "D:\\github\\lightRest\\LightRest\\LightRest.csproj": {
+    "D:\\github\\LightRest\\LightRest\\LightRest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\github\\lightRest\\LightRest\\LightRest.csproj",
+        "projectUniqueName": "D:\\github\\LightRest\\LightRest\\LightRest.csproj",
         "projectName": "LightRest",
-        "projectPath": "D:\\github\\lightRest\\LightRest\\LightRest.csproj",
+        "projectPath": "D:\\github\\LightRest\\LightRest\\LightRest.csproj",
         "packagesPath": "C:\\Users\\Lucas\\.nuget\\packages\\",
         "outputPath": "D:\\github\\LightRest\\LightRest\\obj\\",
         "projectStyle": "PackageReference",

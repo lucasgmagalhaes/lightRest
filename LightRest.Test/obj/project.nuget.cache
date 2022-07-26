@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Wg1VXu3yVXzXxph/WmVfvjq+5gINHOrtt/uO7A0T5k+kd4BVTdl4ns9yEIJPdn6EF6DWhtajwpz/1p+6VpPhRA==",
+  "dgSpecHash": "ixeWaDeQsg6J5nG78NYMuefZI3fW3k2Cxcb1taDYTLRrausMRbEt7MdMPT1g+UGLoJL1XZgjVdka++gAP8TqPQ==",
   "success": true,
-  "projectFilePath": "D:\\github\\lightRest\\LightRest.Test\\LightRest.Test.csproj",
+  "projectFilePath": "D:\\github\\LightRest\\LightRest.Test\\LightRest.Test.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Lucas\\.nuget\\packages\\coverlet.collector\\3.1.2\\coverlet.collector.3.1.2.nupkg.sha512",
     "C:\\Users\\Lucas\\.nuget\\packages\\microsoft.codecoverage\\17.1.0\\microsoft.codecoverage.17.1.0.nupkg.sha512",

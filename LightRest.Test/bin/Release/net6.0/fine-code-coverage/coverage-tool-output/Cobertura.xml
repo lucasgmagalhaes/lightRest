@@ -1,103 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage line-rate="0.23684210526315788" branch-rate="0.15384615384615385" lines-covered="27" lines-valid="114" branches-covered="4" branches-valid="26" complexity="70" version="0" timestamp="1658232351">
+<coverage line-rate="0.2018348623853211" branch-rate="0.08333333333333333" lines-covered="22" lines-valid="109" branches-covered="2" branches-valid="24" complexity="66" version="0" timestamp="1658836104">
   <sources>
     <source>D:\github\LightRest\</source>
     <source>C:\</source>
   </sources>
   <packages>
-    <package name="LightRest" line-rate="0.07526881720430108" branch-rate="0.15384615384615385" complexity="63">
+    <package name="LightRest" line-rate="0.06521739130434782" branch-rate="0.08333333333333333" complexity="61">
       <classes>
-        <class name="LightRest.HttpRequest" filename="D:\github\LightRest\LightRest\HttpRequest.cs" line-rate="0.25925925925925924" branch-rate="0.2857142857142857" complexity="18">
+        <class name="LightRest.HttpRequest" filename="D:\github\LightRest\LightRest\HttpRequest.cs" line-rate="0.23076923076923078" branch-rate="0.16666666666666666" complexity="16">
           <methods>
-            <method name="AddHeader" signature="(...)" line-rate="1" branch-rate="1" complexity="4">
+            <method name="AddHeader" signature="(...)" line-rate="1" branch-rate="1" complexity="2">
               <lines>
-                <line number="19" hits="8" branch="true" condition-coverage="100% (2/2)" />
-                <line number="20" hits="6" branch="true" condition-coverage="100% (2/2)" />
+                <line number="19" hits="6" branch="true" condition-coverage="100% (2/2)" />
+                <line number="21" hits="2" branch="false" />
                 <line number="22" hits="2" branch="false" />
-                <line number="23" hits="2" branch="false" />
               </lines>
             </method>
             <method name="MakeParametersUrlEncoded" signature="()" line-rate="0" branch-rate="0" complexity="2">
               <lines>
-                <line number="28" hits="0" branch="true" condition-coverage="0% (0/2)" />
-                <line number="30" hits="0" branch="false" />
+                <line number="27" hits="0" branch="true" condition-coverage="0% (0/2)" />
+                <line number="29" hits="0" branch="false" />
+                <line number="31" hits="0" branch="false" />
                 <line number="32" hits="0" branch="false" />
-                <line number="33" hits="0" branch="false" />
               </lines>
             </method>
             <method name="AddParameter" signature="(...)" line-rate="0" branch-rate="0" complexity="6">
               <lines>
+                <line number="37" hits="0" branch="true" condition-coverage="0% (0/2)" />
                 <line number="38" hits="0" branch="true" condition-coverage="0% (0/2)" />
-                <line number="39" hits="0" branch="true" condition-coverage="0% (0/2)" />
-                <line number="41" hits="0" branch="true" condition-coverage="0% (0/2)" />
-                <line number="43" hits="0" branch="false" />
+                <line number="40" hits="0" branch="true" condition-coverage="0% (0/2)" />
+                <line number="42" hits="0" branch="false" />
+                <line number="45" hits="0" branch="false" />
                 <line number="46" hits="0" branch="false" />
-                <line number="47" hits="0" branch="false" />
               </lines>
             </method>
             <method name="AddBody" signature="(...)" line-rate="0" branch-rate="1" complexity="1">
               <lines>
+                <line number="51" hits="0" branch="false" />
                 <line number="52" hits="0" branch="false" />
-                <line number="53" hits="0" branch="false" />
               </lines>
             </method>
             <method name="ClearHeaders" signature="()" line-rate="0" branch-rate="1" complexity="1">
               <lines>
+                <line number="57" hits="0" branch="false" />
                 <line number="58" hits="0" branch="false" />
-                <line number="59" hits="0" branch="false" />
               </lines>
             </method>
             <method name="Dispose" signature="(...)" line-rate="0" branch-rate="0" complexity="2">
               <lines>
-                <line number="64" hits="0" branch="true" condition-coverage="0% (0/2)" />
-                <line number="66" hits="0" branch="false" />
-                <line number="68" hits="0" branch="false" />
+                <line number="63" hits="0" branch="true" condition-coverage="0% (0/2)" />
+                <line number="65" hits="0" branch="false" />
+                <line number="67" hits="0" branch="false" />
               </lines>
             </method>
             <method name="Dispose" signature="()" line-rate="0" branch-rate="1" complexity="1">
               <lines>
+                <line number="71" hits="0" branch="false" />
                 <line number="72" hits="0" branch="false" />
                 <line number="73" hits="0" branch="false" />
-                <line number="74" hits="0" branch="false" />
               </lines>
             </method>
             <method name=".ctor" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="12" hits="5" branch="false" />
-                <line number="14" hits="5" branch="false" />
-                <line number="15" hits="5" branch="false" />
+                <line number="12" hits="3" branch="false" />
+                <line number="14" hits="3" branch="false" />
+                <line number="15" hits="3" branch="false" />
               </lines>
             </method>
           </methods>
           <lines>
-            <line number="12" hits="5" branch="false" />
-            <line number="14" hits="5" branch="false" />
-            <line number="15" hits="5" branch="false" />
-            <line number="19" hits="8" branch="true" condition-coverage="100% (2/2)" />
-            <line number="20" hits="6" branch="true" condition-coverage="100% (2/2)" />
+            <line number="12" hits="3" branch="false" />
+            <line number="14" hits="3" branch="false" />
+            <line number="15" hits="3" branch="false" />
+            <line number="19" hits="6" branch="true" condition-coverage="100% (2/2)" />
+            <line number="21" hits="2" branch="false" />
             <line number="22" hits="2" branch="false" />
-            <line number="23" hits="2" branch="false" />
-            <line number="28" hits="0" branch="true" condition-coverage="0% (0/2)" />
-            <line number="30" hits="0" branch="false" />
+            <line number="27" hits="0" branch="true" condition-coverage="0% (0/2)" />
+            <line number="29" hits="0" branch="false" />
+            <line number="31" hits="0" branch="false" />
             <line number="32" hits="0" branch="false" />
-            <line number="33" hits="0" branch="false" />
+            <line number="37" hits="0" branch="true" condition-coverage="0% (0/2)" />
             <line number="38" hits="0" branch="true" condition-coverage="0% (0/2)" />
-            <line number="39" hits="0" branch="true" condition-coverage="0% (0/2)" />
-            <line number="41" hits="0" branch="true" condition-coverage="0% (0/2)" />
-            <line number="43" hits="0" branch="false" />
+            <line number="40" hits="0" branch="true" condition-coverage="0% (0/2)" />
+            <line number="42" hits="0" branch="false" />
+            <line number="45" hits="0" branch="false" />
             <line number="46" hits="0" branch="false" />
-            <line number="47" hits="0" branch="false" />
+            <line number="51" hits="0" branch="false" />
             <line number="52" hits="0" branch="false" />
-            <line number="53" hits="0" branch="false" />
+            <line number="57" hits="0" branch="false" />
             <line number="58" hits="0" branch="false" />
-            <line number="59" hits="0" branch="false" />
-            <line number="64" hits="0" branch="true" condition-coverage="0% (0/2)" />
-            <line number="66" hits="0" branch="false" />
-            <line number="68" hits="0" branch="false" />
+            <line number="63" hits="0" branch="true" condition-coverage="0% (0/2)" />
+            <line number="65" hits="0" branch="false" />
+            <line number="67" hits="0" branch="false" />
+            <line number="71" hits="0" branch="false" />
             <line number="72" hits="0" branch="false" />
             <line number="73" hits="0" branch="false" />
-            <line number="74" hits="0" branch="false" />
           </lines>
         </class>
         <class name="LightRest.LightClient" filename="D:\github\LightRest\LightRest\LightClient.cs" line-rate="0" branch-rate="0" complexity="43">
@@ -394,7 +392,7 @@
         </class>
       </classes>
     </package>
-    <package name="LightRest.Test" line-rate="0.9523809523809523" branch-rate="1" complexity="7">
+    <package name="LightRest.Test" line-rate="0.9411764705882353" branch-rate="1" complexity="5">
       <classes>
         <class name="AutoGeneratedProgram" filename="C:\Users\Lucas\.nuget\packages\microsoft.net.test.sdk\17.1.0\build\netcoreapp2.1\Microsoft.NET.Test.Sdk.Program.cs" line-rate="0" branch-rate="1" complexity="1">
           <methods>
@@ -408,12 +406,12 @@
             <line number="4" hits="0" branch="false" />
           </lines>
         </class>
-        <class name="LightRest.Test.HttpRequestTest" filename="D:\github\LightRest\LightRest.Test\HttpRequestTest.cs" line-rate="1" branch-rate="1" complexity="6">
+        <class name="LightRest.Test.HttpRequestTest" filename="D:\github\LightRest\LightRest.Test\HttpRequestTest.cs" line-rate="1" branch-rate="1" complexity="4">
           <methods>
             <method name="Setup" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="10" hits="5" branch="false" />
-                <line number="11" hits="5" branch="false" />
+                <line number="10" hits="3" branch="false" />
+                <line number="11" hits="3" branch="false" />
               </lines>
             </method>
             <method name="AddHeader_Should_Add_Headers" signature="()" line-rate="1" branch-rate="1" complexity="1">
@@ -436,28 +434,16 @@
                 <line number="32" hits="1" branch="false" />
               </lines>
             </method>
-            <method name="AddHeader_Should_Throw_For_Null_Value" signature="()" line-rate="1" branch-rate="1" complexity="1">
+            <method name="AddHeader_Should_Throw_For_Empty_Key" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
                 <line number="37" hits="2" branch="false" />
                 <line number="38" hits="1" branch="false" />
               </lines>
             </method>
-            <method name="AddHeader_Should_Throw_For_Empty_Key" signature="()" line-rate="1" branch-rate="1" complexity="1">
-              <lines>
-                <line number="43" hits="2" branch="false" />
-                <line number="44" hits="1" branch="false" />
-              </lines>
-            </method>
-            <method name="AddHeader_Should_Throw_For_Empty_Value" signature="()" line-rate="1" branch-rate="1" complexity="1">
-              <lines>
-                <line number="49" hits="2" branch="false" />
-                <line number="50" hits="1" branch="false" />
-              </lines>
-            </method>
           </methods>
           <lines>
-            <line number="10" hits="5" branch="false" />
-            <line number="11" hits="5" branch="false" />
+            <line number="10" hits="3" branch="false" />
+            <line number="11" hits="3" branch="false" />
             <line number="16" hits="1" branch="false" />
             <line number="17" hits="1" branch="false" />
             <line number="19" hits="5" branch="false" />
@@ -472,10 +458,6 @@
             <line number="32" hits="1" branch="false" />
             <line number="37" hits="2" branch="false" />
             <line number="38" hits="1" branch="false" />
-            <line number="43" hits="2" branch="false" />
-            <line number="44" hits="1" branch="false" />
-            <line number="49" hits="2" branch="false" />
-            <line number="50" hits="1" branch="false" />
           </lines>
         </class>
       </classes>

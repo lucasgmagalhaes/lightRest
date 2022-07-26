@@ -5467,11 +5467,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\github\\lightRest\\Benchmark\\Benchmark.csproj",
+      "projectUniqueName": "D:\\github\\LightRest\\Benchmark\\Benchmark.csproj",
       "projectName": "Benchmark",
-      "projectPath": "D:\\github\\lightRest\\Benchmark\\Benchmark.csproj",
+      "projectPath": "D:\\github\\LightRest\\Benchmark\\Benchmark.csproj",
       "packagesPath": "C:\\Users\\Lucas\\.nuget\\packages\\",
-      "outputPath": "D:\\github\\lightRest\\Benchmark\\obj\\",
+      "outputPath": "D:\\github\\LightRest\\Benchmark\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Lucas\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -5488,8 +5488,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\github\\lightRest\\LightRest\\LightRest.csproj": {
-              "projectPath": "D:\\github\\lightRest\\LightRest\\LightRest.csproj"
+            "D:\\github\\LightRest\\LightRest\\LightRest.csproj": {
+              "projectPath": "D:\\github\\LightRest\\LightRest\\LightRest.csproj"
             }
           }
         }

@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "D:\\github\\lightRest\\LightRest\\LightRest.csproj": {}
+    "D:\\github\\LightRest\\LightRest\\LightRest.csproj": {}
   },
   "projects": {
-    "D:\\github\\lightRest\\LightRest\\LightRest.csproj": {
+    "D:\\github\\LightRest\\LightRest\\LightRest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\github\\lightRest\\LightRest\\LightRest.csproj",
+        "projectUniqueName": "D:\\github\\LightRest\\LightRest\\LightRest.csproj",
         "projectName": "LightRest",
-        "projectPath": "D:\\github\\lightRest\\LightRest\\LightRest.csproj",
+        "projectPath": "D:\\github\\LightRest\\LightRest\\LightRest.csproj",
         "packagesPath": "C:\\Users\\Lucas\\.nuget\\packages\\",
         "outputPath": "D:\\github\\LightRest\\LightRest\\obj\\",
         "projectStyle": "PackageReference",

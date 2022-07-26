@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Jby8WNMYuL8bJxnF4xGGe7T7e6aaj7cmBlwGoTk9UkuQmMe6lZ4iPtZdI37L7OKKld8ajw98AH9IPYQ7B0eNPg==",
+  "dgSpecHash": "qAbHjfpMEsKYWsAHm3wCIu5uf7yKbvXAT83dkCM/HsX1oOOD5le0vdGBApfF4eFicgDXz7+9CI5CewFVHqkshA==",
   "success": true,
-  "projectFilePath": "D:\\github\\lightRest\\Benchmark\\Benchmark.csproj",
+  "projectFilePath": "D:\\github\\LightRest\\Benchmark\\Benchmark.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Lucas\\.nuget\\packages\\benchmarkdotnet\\0.13.1\\benchmarkdotnet.0.13.1.nupkg.sha512",
     "C:\\Users\\Lucas\\.nuget\\packages\\benchmarkdotnet.annotations\\0.13.1\\benchmarkdotnet.annotations.0.13.1.nupkg.sha512",

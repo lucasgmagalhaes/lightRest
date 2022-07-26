@@ -20,12 +20,17 @@ public class Md5VsSha256
     [Benchmark]
     public async Task Light()
     {
-        await light.GetAsync("http://www.contoso.com/");
+        var req = new HttpRequest();
+        req.SetUrl("http://www.contoso.com/");
+        req.AddHeader("v1", "2");
+        await light.GetAsync(req);
     }
 
     [Benchmark]
     public async Task RestSharp()
     {
+        var req = new RestRequest("http://www.contoso.com/");
+        req.AddHeader("v1", "2");
         await rest.GetAsync(new RestRequest("http://www.contoso.com/"));
     }
 
