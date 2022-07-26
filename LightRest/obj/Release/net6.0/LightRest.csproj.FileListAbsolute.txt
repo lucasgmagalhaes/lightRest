@@ -1,0 +1,12 @@
+D:\github\LightRest\LightRest\bin\Release\net6.0\LightRest.deps.json
+D:\github\LightRest\LightRest\bin\Release\net6.0\LightRest.dll
+D:\github\LightRest\LightRest\bin\Release\net6.0\LightRest.pdb
+D:\github\LightRest\LightRest\obj\Release\net6.0\LightRest.csproj.AssemblyReference.cache
+D:\github\LightRest\LightRest\obj\Release\net6.0\LightRest.GeneratedMSBuildEditorConfig.editorconfig
+D:\github\LightRest\LightRest\obj\Release\net6.0\LightRest.AssemblyInfoInputs.cache
+D:\github\LightRest\LightRest\obj\Release\net6.0\LightRest.AssemblyInfo.cs
+D:\github\LightRest\LightRest\obj\Release\net6.0\LightRest.csproj.CoreCompileInputs.cache
+D:\github\LightRest\LightRest\obj\Release\net6.0\LightRest.dll
+D:\github\LightRest\LightRest\obj\Release\net6.0\refint\LightRest.dll
+D:\github\LightRest\LightRest\obj\Release\net6.0\LightRest.pdb
+D:\github\LightRest\LightRest\obj\Release\net6.0\ref\LightRest.dll
