@@ -1,4 +1,3 @@
-[benchmark](./etc/benchmark.png)
 <div align="center">
   <br />
   <p>
