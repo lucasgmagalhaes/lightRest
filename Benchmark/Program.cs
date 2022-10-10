@@ -5,6 +5,8 @@ using LightRest;
 using RestSharp;
 using System.Text.Json.Serialization;
 
+namespace LightRest.Benchmark;
+
 public class ResponseExample
 {
     [JsonPropertyName("userId")]
@@ -23,7 +25,7 @@ public class ResponseExample
 [MemoryDiagnoser]
 public class Md5VsSha256
 {
-    private LightRest.LightClient light;
+    private LightClient light;
     private RestClient rest;
 
 
@@ -34,24 +36,24 @@ public class Md5VsSha256
     }
 
     [Benchmark]
-    public async Task Light_With_Request()
+    public async Task Light_With_HttpRequest_Class()
     {
         var req = new HttpRequest();
         req.SetUrl("https://jsonplaceholder.typicode.com/todos/1");
         req.AddHeader("v1", "2");
-        var response = await light.GetAsync(req);
+        _ = await light.GetAsync(req);
     }
 
     [Benchmark]
     public async Task Light_Directly()
     {
-        var response = await light.GetAsync("https://jsonplaceholder.typicode.com/todos/1");
+        _ = await light.GetAsync("https://jsonplaceholder.typicode.com/todos/1");
     }
 
     [Benchmark]
     public async Task Light_Directly_With_Serialization()
     {
-        var response = await light.GetAsync<ResponseExample>("https://jsonplaceholder.typicode.com/todos/1");
+        _ = await light.GetAsync<ResponseExample>("https://jsonplaceholder.typicode.com/todos/1");
     }
 
     [Benchmark]
@@ -59,7 +61,7 @@ public class Md5VsSha256
     {
         var req = new RestRequest("https://jsonplaceholder.typicode.com/todos/1");
         req.AddHeader("v1", "2");
-        var response = await rest.GetAsync(req);
+        _ = await rest.GetAsync(req);
     }
 
     [Benchmark]
@@ -67,14 +69,14 @@ public class Md5VsSha256
     {
         var req = new RestRequest("https://jsonplaceholder.typicode.com/todos/1");
         req.AddHeader("v1", "2");
-        var response = await rest.GetAsync<ResponseExample>(req);
+        _ = await rest.GetAsync<ResponseExample>(req);
     }
 
 }
 
-public class Program
+public static class Program
 {
-    public static void Main(string[] args)
+    public static void Main(string[] _)
     {
         BenchmarkRunner.Run(typeof(Program).Assembly);
     }

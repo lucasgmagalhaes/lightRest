@@ -1,25 +1,26 @@
 ﻿using System.Net;
 using System.Text;
-using System.Text.Json;
 
 namespace LightRest;
 
 public class LightClient : IDisposable
 {
     private readonly HttpClient client = new();
+    private Serializer _serializer;
     private string? _mediaType;
     private Encoding? _encoding;
 
     public LightClient()
     {
+        _serializer = new Serializer();
     }
 
-    public LightClient(HttpClient client)
+    public LightClient(HttpClient client) : this()
     {
         this.client = client;
     }
 
-    public LightClient(string baseUrl)
+    public LightClient(string baseUrl) : this()
     {
         client.BaseAddress = new Uri(baseUrl);
     }
@@ -34,6 +35,20 @@ public class LightClient : IDisposable
         _encoding = encoding;
     }
 
+    public void SetSerializer(Func<object, Type, string> serializer)
+    {
+        _serializer.Serialize = serializer;
+    }
+
+    public void SetDeserializer(Func<string, Type, object?> serializer)
+    {
+        _serializer.Deserialize = serializer;
+    }
+
+    public void RestoreSerializer()
+    {
+        _serializer = new Serializer();
+    }
 
     #region GET
 
@@ -42,19 +57,9 @@ public class LightClient : IDisposable
         return SendAsync<string>(url, HttpMethod.Get, cancellationToken);
     }
 
-    public Task<(string?, HttpStatusCode)> GetAsync(HttpRequest request, CancellationToken cancellationToken = default)
-    {
-        return SendAsync<string>(request.httpRequest, HttpMethod.Get, cancellationToken);
-    }
-
     public Task<(T?, HttpStatusCode)> GetAsync<T>(string url, CancellationToken cancellationToken = default) where T : class
     {
         return SendAsync<T>(url, HttpMethod.Get, cancellationToken);
-    }
-
-    public Task<(T?, HttpStatusCode)> GetAsync<T>(HttpRequest request, CancellationToken cancellationToken = default) where T : class
-    {
-        return SendAsync<T>(request.httpRequest, HttpMethod.Get, cancellationToken);
     }
 
     #endregion
@@ -64,6 +69,11 @@ public class LightClient : IDisposable
     public Task<(string?, HttpStatusCode)> PostAsync(string url, CancellationToken cancellationToken = default)
     {
         return SendAsync<string>(url, HttpMethod.Post, cancellationToken);
+    }
+
+    public Task<(string?, HttpStatusCode)> PostAsync<T>(string url, T body, CancellationToken cancellationToken = default) where T : class
+    {
+        return SendAsync<string>(url, HttpMethod.Post, _serializer.Serialize(body, typeof(T)), cancellationToken);
     }
 
     public Task<(T?, HttpStatusCode)> PostAsync<T>(string url, CancellationToken cancellationToken = default) where T : class
@@ -76,19 +86,9 @@ public class LightClient : IDisposable
         return SendAsync<string>(url, HttpMethod.Post, body, cancellationToken);
     }
 
-    public Task<(string?, HttpStatusCode)> PostAsync(HttpRequest request, CancellationToken cancellationToken = default)
-    {
-        return SendAsync<string>(request.httpRequest, HttpMethod.Post, cancellationToken);
-    }
-
     public Task<(T?, HttpStatusCode)> PostAsync<T>(string url, string body, CancellationToken cancellationToken = default) where T : class
     {
         return SendAsync<T>(url, HttpMethod.Post, body, cancellationToken);
-    }
-
-    public Task<(T?, HttpStatusCode)> PostAsync<T>(HttpRequest request, CancellationToken cancellationToken = default) where T : class
-    {
-        return SendAsync<T>(request.httpRequest, HttpMethod.Post, cancellationToken);
     }
 
     #endregion
@@ -105,11 +105,6 @@ public class LightClient : IDisposable
         return SendAsync<string>(url, HttpMethod.Delete, body, cancellationToken);
     }
 
-    public Task<(string?, HttpStatusCode)> DeleteAsync(HttpRequest request, CancellationToken cancellationToken = default)
-    {
-        return SendAsync<string>(request.httpRequest, HttpMethod.Delete, cancellationToken);
-    }
-
     public Task<(T?, HttpStatusCode)> DeleteAsync<T>(string url, CancellationToken cancellationToken = default) where T : class
     {
         return SendAsync<T>(url, HttpMethod.Delete, cancellationToken);
@@ -118,11 +113,6 @@ public class LightClient : IDisposable
     public Task<(T?, HttpStatusCode)> DeleteAsync<T>(string url, string body, CancellationToken cancellationToken = default) where T : class
     {
         return SendAsync<T>(url, HttpMethod.Delete, body, cancellationToken);
-    }
-
-    public Task<(T?, HttpStatusCode)> DeleteAsync<T>(HttpRequest request, CancellationToken cancellationToken = default) where T : class
-    {
-        return SendAsync<T>(request.httpRequest, HttpMethod.Delete, cancellationToken);
     }
 
     #endregion
@@ -136,19 +126,9 @@ public class LightClient : IDisposable
         return SendAsync<string>(url, HttpMethod.Patch, body, cancellationToken);
     }
 
-    public Task<(string?, HttpStatusCode)> PatchAsync(HttpRequest request, CancellationToken cancellationToken = default)
-    {
-        return SendAsync<string>(request.httpRequest, HttpMethod.Patch, cancellationToken);
-    }
-
     public Task<(T?, HttpStatusCode)> PatchAsync<T>(string url, string body, CancellationToken cancellationToken = default) where T : class
     {
         return SendAsync<T>(url, HttpMethod.Patch, body, cancellationToken);
-    }
-
-    public Task<(T?, HttpStatusCode)> PatchAsync<T>(HttpRequest request, CancellationToken cancellationToken = default) where T : class
-    {
-        return SendAsync<T>(request.httpRequest, HttpMethod.Patch, cancellationToken);
     }
 
 #endif
@@ -161,19 +141,9 @@ public class LightClient : IDisposable
         return SendAsync<string>(url, HttpMethod.Put, body, cancellationToken);
     }
 
-    public Task<(T?, HttpStatusCode)> PutAsync<T>(HttpRequest request, CancellationToken cancellationToken = default) where T : class
-    {
-        return SendAsync<T>(request.httpRequest, HttpMethod.Put, cancellationToken);
-    }
-
     public Task<(T?, HttpStatusCode)> PutAsync<T>(string url, string body, CancellationToken cancellationToken = default) where T : class
     {
         return SendAsync<T>(url, HttpMethod.Put, body, cancellationToken);
-    }
-
-    public Task<(string?, HttpStatusCode)> PutAsync(HttpRequest request, CancellationToken cancellationToken = default)
-    {
-        return SendAsync<string>(request.httpRequest, HttpMethod.Put, cancellationToken);
     }
 
     #endregion
@@ -185,19 +155,25 @@ public class LightClient : IDisposable
         return HeadAsync<string>(url, cancellationToken);
     }
 
-    public Task<(string?, HttpStatusCode)> HeadAsync(HttpRequest request, CancellationToken cancellationToken = default)
-    {
-        return HeadAsync<string>(request, cancellationToken);
-    }
-
     public Task<(T?, HttpStatusCode)> HeadAsync<T>(string url, CancellationToken cancellationToken = default) where T : class
     {
         return SendAsync<T>(url, HttpMethod.Head, cancellationToken);
     }
 
-    public Task<(T?, HttpStatusCode)> HeadAsync<T>(HttpRequest request, CancellationToken cancellationToken = default) where T : class
+    #endregion
+
+    #region SEND
+
+    public Task<(string?, HttpStatusCode)> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
     {
-        return SendAsync<T>(request.httpRequest, HttpMethod.Head, cancellationToken);
+        return SendAsync<string>(request, cancellationToken);
+    }
+
+    public async Task<(T?, HttpStatusCode)> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken = default) where T : class
+    {
+        var response = await client.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        return (await ReadContentAsync<T>(response, cancellationToken), response.StatusCode);
     }
 
     #endregion
@@ -212,31 +188,17 @@ public class LightClient : IDisposable
         var httpRequest = new HttpRequestMessage
         {
             Method = method,
-            RequestUri = new Uri(url),
+            RequestUri = string.IsNullOrEmpty(url) ? null : new Uri(url),
         };
 
         if (!string.IsNullOrEmpty(body))
         {
             httpRequest.Content = new StringContent(body, _encoding, _mediaType);
         }
-
         return SendAsync<T>(httpRequest, cancellationToken);
     }
 
-    private Task<(T?, HttpStatusCode)> SendAsync<T>(HttpRequestMessage request, HttpMethod method, CancellationToken cancellationToken = default) where T : class
-    {
-        request.Method = method;
-        return SendAsync<T>(request, cancellationToken);
-    }
-
-    private async Task<(T?, HttpStatusCode)> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken = default) where T : class
-    {
-        var response = await client.SendAsync(request, cancellationToken);
-        response.EnsureSuccessStatusCode();
-        return (await ReadContentAsync<T>(response, cancellationToken), response.StatusCode);
-    }
-
-    private static async Task<T?> ReadContentAsync<T>(HttpResponseMessage response, CancellationToken cancellationToken = default) where T : class
+    private async Task<T?> ReadContentAsync<T>(HttpResponseMessage response, CancellationToken cancellationToken = default) where T : class
     {
         if (typeof(T) == typeof(string))
         {
@@ -253,7 +215,7 @@ public class LightClient : IDisposable
 
         try
         {
-            return JsonSerializer.Deserialize<T>(stringVal);
+            return (T?)_serializer.Deserialize(stringVal, typeof(T));
         }
         catch (Exception ex)
         {
@@ -261,19 +223,23 @@ public class LightClient : IDisposable
         }
     }
 
+#pragma warning disable S1172 // Unused method parameters should be removed
     private static Task<string> ReadAsStringByFrameWorkVersion(HttpContent content, CancellationToken cancellationToken)
+#pragma warning restore S1172 // Unused method parameters should be removed
     {
 #if NETSTANDARD2_0
-    return content.ReadAsStringAsync();
+        return content.ReadAsStringAsync();
 #else
         return content.ReadAsStringAsync(cancellationToken);
 #endif
     }
 
+#pragma warning disable S1172 // Unused method parameters should be removed
     private static Task<byte[]> ReadAsByteArrayAsyncByFrameWorkVersion(HttpContent content, CancellationToken cancellationToken)
+#pragma warning restore S1172 // Unused method parameters should be removed
     {
 #if NETSTANDARD2_0
-    return content.ReadAsByteArrayAsync();
+        return content.ReadAsByteArrayAsync();
 #else
         return content.ReadAsByteArrayAsync(cancellationToken);
 #endif

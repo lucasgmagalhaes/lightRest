@@ -31,9 +31,13 @@ app.MapPut("/games", ([FromBody] Game game, [FromQuery] int id) =>
 
 app.MapPost("/games", ([FromBody] Game game) =>
 {
+    if (game is null) return;
     game.Id = games.Count + 1;
     games.Add(game);
 });
+
+app.MapPost("/games/post-empty", () => { });
+
 
 app.Run();
 

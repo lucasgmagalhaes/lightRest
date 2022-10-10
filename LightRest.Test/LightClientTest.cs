@@ -10,7 +10,7 @@ namespace LightRest.Test;
 public class LightClientTest
 {
     private LightClient _light { get; set; }
-    private const string GET_URL = "http://localhost/games";
+    private const string API_URL = "http://localhost/games";
     private HttpClient _client;
 
     [SetUp]
@@ -31,12 +31,13 @@ public class LightClientTest
 
         _client = application.CreateClient(clientOptions);
         _light = new LightClient(_client);
+        _light.SetMediaType("application/json");
     }
 
     [Test]
     public async Task GetAsync_ShouldGet_String()
     {
-        var (response, code) = await _light.GetAsync(GET_URL);
+        var (response, code) = await _light.GetAsync(API_URL);
         Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
         Assert.NotNull(response);
         Assert.That(response.Replace("\n", ""), Is.EqualTo(@"[{""id"":1,""title"":""elden ring""}]"));
@@ -45,11 +46,14 @@ public class LightClientTest
     [Test]
     public async Task GetAsync_ShouldGet_Serialized()
     {
-        var (response, code) = await _light.GetAsync<List<Game>>(GET_URL);
+        var (response, code) = await _light.GetAsync<List<Game>>(API_URL);
         Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
-        Assert.NotNull(response);
-        Assert.That(response[0].Id, Is.EqualTo(1));
-        Assert.That(response[0].Title, Is.EqualTo("elden ring"));
+        Assert.That(response, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(response[0].Id, Is.EqualTo(1));
+            Assert.That(response[0].Title, Is.EqualTo("elden ring"));
+        });
     }
 
     [Test]
@@ -58,10 +62,29 @@ public class LightClientTest
         var game = new Game
         {
             Title = "game test",
-        };
-        _light.SetMediaType("application/json");
-        var (response, code) = await _light.PostAsync(GET_URL, JsonSerializer.Serialize(game));
+        };        
+        var (response, code) = await _light.PostAsync(API_URL, JsonSerializer.Serialize(game));
         Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
-        Assert.IsEmpty(response);
+        Assert.That(response, Is.Empty);
+    }
+
+    [Test]
+    public async Task GetAsync_Should_Post_Object()
+    {
+        var game = new Game
+        {
+            Title = "game test",
+        };
+        var (response, code) = await _light.PostAsync(API_URL, game);
+        Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+        Assert.That(response, Is.Empty);
+    }
+
+    [Test]
+    public async Task GetAsync_Should_Post_Without_Body()
+    {
+        var (response, code) = await _light.PostAsync(API_URL + "/post-empty");
+        Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+        Assert.That(response, Is.Empty);
     }
 }
