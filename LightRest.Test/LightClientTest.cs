@@ -56,6 +56,7 @@ public class LightClientTest
         });
     }
 
+    #region POST
     [Test]
     public async Task GetAsync_Should_Post_String()
     {
@@ -75,7 +76,7 @@ public class LightClientTest
         {
             Title = "game test",
         };
-        var (response, code) = await _light.PostAsync(API_URL, game);
+        var (response, code) = await _light.PostAsync<int>(API_URL, game);
         Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
         Assert.That(response, Is.Empty);
     }
@@ -87,4 +88,78 @@ public class LightClientTest
         Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
         Assert.That(response, Is.Empty);
     }
+
+    #endregion
+
+    #region PUT
+
+    [Test]
+    public async Task GetAsync_Should_Put_String()
+    {
+        var game = new Game
+        {
+            Title = "game test",
+        };
+        var (response, code) = await _light.PutAsync(API_URL + "/1", JsonSerializer.Serialize(game));
+        Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+        Assert.That(response, Is.Empty);
+    }
+
+    [Test]
+    public async Task GetAsync_Should_Put_Object()
+    {
+        var game = new Game
+        {
+            Title = "game test",
+        };
+        var (response, code) = await _light.PutAsync(API_URL + "/1", game);
+        Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+        Assert.That(response, Is.Empty);
+    }
+
+    [Test]
+    public async Task GetAsync_Should_Put_Without_Body()
+    {
+        var (response, code) = await _light.PutAsync(API_URL + "/put-empty");
+        Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+        Assert.That(response, Is.Empty);
+    }
+
+    #endregion
+
+    #region PATCH
+
+    [Test]
+    public async Task GetAsync_Should_Patch_String()
+    {
+        var game = new Game
+        {
+            Title = "game test",
+        };
+        var (response, code) = await _light.PutAsync(API_URL + "/1", JsonSerializer.Serialize(game));
+        Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+        Assert.That(response, Is.Empty);
+    }
+
+    [Test]
+    public async Task GetAsync_Should_Patch_Object()
+    {
+        var game = new Game
+        {
+            Title = "game test",
+        };
+        var (response, code) = await _light.PutAsync(API_URL + "/1", game);
+        Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+        Assert.That(response, Is.Empty);
+    }
+
+    [Test]
+    public async Task GetAsync_Should_Patch_Without_Body()
+    {
+        var (response, code) = await _light.PatchAsync(API_URL + "/put-empty");
+        Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+        Assert.That(response, Is.Empty);
+    }
+
+    #endregion
 }

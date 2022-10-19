@@ -23,7 +23,7 @@ app.MapGet("/games", () =>
     return games;
 });
 
-app.MapPut("/games", ([FromBody] Game game, [FromQuery] int id) =>
+app.MapPut("/games/{id}", ([FromBody] Game game, [FromRoute] int id) =>
 {
     game.Id = id;
     games.Add(game);
@@ -37,6 +37,7 @@ app.MapPost("/games", ([FromBody] Game game) =>
 });
 
 app.MapPost("/games/post-empty", () => { });
+app.MapPut("/games/put-empty", () => { });
 
 
 app.Run();

@@ -1,54 +1,77 @@
 ﻿using System.Net;
 using System.Text;
+using System.Text.Json;
 
 namespace LightRest;
 
 public class LightClient : IDisposable
 {
-    private readonly HttpClient client = new();
-    private Serializer _serializer;
+    private readonly HttpClient _client;
     private string? _mediaType;
     private Encoding? _encoding;
+    private JsonSerializerOptions? _serializerOptions;
 
     public LightClient()
     {
-        _serializer = new Serializer();
+        _client ??= new();
     }
 
     public LightClient(HttpClient client) : this()
     {
-        this.client = client;
+        _client = client;
     }
 
     public LightClient(string baseUrl) : this()
     {
-        client.BaseAddress = new Uri(baseUrl);
+        _client ??= new();
+        _client.BaseAddress = new Uri(baseUrl);
     }
 
-    public void SetMediaType(string? media)
+    public LightClient SetBaseUrl(string url)
+    {
+        _client.BaseAddress = new Uri(url);
+        return this;
+    }
+
+    public LightClient SetMediaType(string? media)
     {
         _mediaType = media;
+        return this;
     }
 
-    public void SetEncoding(Encoding? encoding)
+    public LightClient SetEncoding(Encoding? encoding)
     {
         _encoding = encoding;
+        return this;
     }
 
-    public void SetSerializer(Func<object, Type, string> serializer)
+    public LightClient SetSerializerOptions(JsonSerializerOptions options)
     {
-        _serializer.Serialize = serializer;
+        _serializerOptions = options;
+        return this;
     }
 
-    public void SetDeserializer(Func<string, Type, object?> serializer)
+    #region HEADER
+
+    public LightClient AddDefaultHeader(string name, string value)
     {
-        _serializer.Deserialize = serializer;
+        _client.DefaultRequestHeaders.Add(name, value);
+        return this;
     }
 
-    public void RestoreSerializer()
+    public LightClient AddDefaultHeader(string name, IEnumerable<string> values)
     {
-        _serializer = new Serializer();
+        _client.DefaultRequestHeaders.Add(name, values);
+        return this;
     }
+
+    public LightClient ClearDefaultHeaders()
+    {
+        _client.DefaultRequestHeaders.Clear();
+        return this;
+    }
+
+    #endregion
 
     #region GET
 
@@ -73,7 +96,7 @@ public class LightClient : IDisposable
 
     public Task<(string?, HttpStatusCode)> PostAsync<T>(string url, T body, CancellationToken cancellationToken = default) where T : class
     {
-        return SendAsync<string>(url, HttpMethod.Post, _serializer.Serialize(body, typeof(T)), cancellationToken);
+        return SendAsync<string>(url, HttpMethod.Post, Serialize(body), cancellationToken);
     }
 
     public Task<(T?, HttpStatusCode)> PostAsync<T>(string url, CancellationToken cancellationToken = default) where T : class
@@ -126,6 +149,11 @@ public class LightClient : IDisposable
         return SendAsync<string>(url, HttpMethod.Patch, body, cancellationToken);
     }
 
+    public Task<(T?, HttpStatusCode)> PatchAsync<T>(string url, T body, CancellationToken cancellationToken = default) where T : class
+    {
+        return SendAsync<T>(url, HttpMethod.Patch, Serialize<T>(body), cancellationToken);
+    }
+
     public Task<(T?, HttpStatusCode)> PatchAsync<T>(string url, string body, CancellationToken cancellationToken = default) where T : class
     {
         return SendAsync<T>(url, HttpMethod.Patch, body, cancellationToken);
@@ -139,6 +167,16 @@ public class LightClient : IDisposable
     public Task<(string?, HttpStatusCode)> PutAsync(string url, string body, CancellationToken cancellationToken = default)
     {
         return SendAsync<string>(url, HttpMethod.Put, body, cancellationToken);
+    }
+
+    public Task<(string?, HttpStatusCode)> PutAsync<T>(string url, T body, CancellationToken cancellationToken = default) where T : class
+    {
+        return SendAsync<string>(url, HttpMethod.Put, Serialize(body), cancellationToken);
+    }
+
+    public Task<(string?, HttpStatusCode)> PutAsync(string url, CancellationToken cancellationToken = default)
+    {
+        return SendAsync<string>(url, HttpMethod.Put, cancellationToken);
     }
 
     public Task<(T?, HttpStatusCode)> PutAsync<T>(string url, string body, CancellationToken cancellationToken = default) where T : class
@@ -164,6 +202,16 @@ public class LightClient : IDisposable
 
     #region SEND
 
+    public Task<(string?, HttpStatusCode)> SendAsync(HttpRequest request, CancellationToken cancellationToken = default)
+    {
+        return SendAsync<string>(request._httpRequest, cancellationToken);
+    }
+
+    public Task<(T?, HttpStatusCode)> SendAsync<T>(HttpRequest request, CancellationToken cancellationToken = default) where T : class
+    {
+        return SendAsync<T>(request._httpRequest, cancellationToken);
+    }
+
     public Task<(string?, HttpStatusCode)> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
     {
         return SendAsync<string>(request, cancellationToken);
@@ -171,16 +219,51 @@ public class LightClient : IDisposable
 
     public async Task<(T?, HttpStatusCode)> SendAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken = default) where T : class
     {
-        var response = await client.SendAsync(request, cancellationToken);
+        var response = await _client.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();
         return (await ReadContentAsync<T>(response, cancellationToken), response.StatusCode);
     }
 
-    #endregion
+    public Task<(string?, HttpStatusCode)> SendAsync(string url, HttpMethod method, CancellationToken cancellationToken = default)
+    {
+        return SendAsync<string>(url, method, null, cancellationToken);
+    }
 
-    private Task<(T?, HttpStatusCode)> SendAsync<T>(string url, HttpMethod method, CancellationToken cancellationToken = default) where T : class
+    public Task<(T?, HttpStatusCode)> SendAsync<T>(string url, HttpMethod method, CancellationToken cancellationToken = default) where T : class
     {
         return SendAsync<T>(url, method, null, cancellationToken);
+    }
+
+    #endregion
+
+    public Task<string> GetStringAsync(string url)
+    {
+        return _client.GetStringAsync(url);
+    }
+
+    public Task<string> GetStringAsync(Uri url)
+    {
+        return _client.GetStringAsync(url);
+    }
+
+    public Task<Stream> GetStreamAsync(Uri url)
+    {
+        return _client.GetStreamAsync(url);
+    }
+
+    public Task<Stream> GetStreamAsync(string url)
+    {
+        return _client.GetStreamAsync(url);
+    }
+
+    public Task<byte[]> GetByteArrayAsync(string url)
+    {
+        return _client.GetByteArrayAsync(url);
+    }
+
+    public Task<byte[]> GetByteArrayAsync(Uri url)
+    {
+        return _client.GetByteArrayAsync(url);
     }
 
     private Task<(T?, HttpStatusCode)> SendAsync<T>(string url, HttpMethod method, string? body = null, CancellationToken cancellationToken = default) where T : class
@@ -202,20 +285,20 @@ public class LightClient : IDisposable
     {
         if (typeof(T) == typeof(string))
         {
-            return (await ReadAsStringByFrameWorkVersion(response.Content, cancellationToken)) as T;
+            return (await ReadAsStringByFrameWorkVersionAsync(response.Content, cancellationToken)) as T;
         }
 
         if (typeof(T) == typeof(byte[]))
         {
-            return (await ReadAsByteArrayAsyncByFrameWorkVersion(response.Content, cancellationToken)) as T;
+            return (await ReadAsByteArrayAsyncByFrameWorkVersionAsync(response.Content, cancellationToken)) as T;
         }
 
-        var stringVal = await ReadAsStringByFrameWorkVersion(response.Content, cancellationToken);
+        var stringVal = await ReadAsStringByFrameWorkVersionAsync(response.Content, cancellationToken);
         if (stringVal is null) return default;
 
         try
         {
-            return (T?)_serializer.Deserialize(stringVal, typeof(T));
+            return JsonSerializer.Deserialize<T>(stringVal, _serializerOptions);
         }
         catch (Exception ex)
         {
@@ -223,8 +306,13 @@ public class LightClient : IDisposable
         }
     }
 
+    private string Serialize<T>(T val)
+    {
+        return JsonSerializer.Serialize(val, _serializerOptions);
+    }
+
 #pragma warning disable S1172 // Unused method parameters should be removed
-    private static Task<string> ReadAsStringByFrameWorkVersion(HttpContent content, CancellationToken cancellationToken)
+    private static Task<string> ReadAsStringByFrameWorkVersionAsync(HttpContent content, CancellationToken cancellationToken)
 #pragma warning restore S1172 // Unused method parameters should be removed
     {
 #if NETSTANDARD2_0
@@ -235,7 +323,7 @@ public class LightClient : IDisposable
     }
 
 #pragma warning disable S1172 // Unused method parameters should be removed
-    private static Task<byte[]> ReadAsByteArrayAsyncByFrameWorkVersion(HttpContent content, CancellationToken cancellationToken)
+    private static Task<byte[]> ReadAsByteArrayAsyncByFrameWorkVersionAsync(HttpContent content, CancellationToken cancellationToken)
 #pragma warning restore S1172 // Unused method parameters should be removed
     {
 #if NETSTANDARD2_0
@@ -255,7 +343,7 @@ public class LightClient : IDisposable
     {
         if (disposing)
         {
-            client.Dispose();
+            _client.Dispose();
         }
     }
 }

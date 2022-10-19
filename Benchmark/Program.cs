@@ -28,6 +28,7 @@ public class Md5VsSha256
     private LightClient light;
     private RestClient rest;
 
+    private const string URL = "https://jsonplaceholder.typicode.com/todos";
 
     public Md5VsSha256()
     {
@@ -38,28 +39,27 @@ public class Md5VsSha256
     [Benchmark]
     public async Task Light_With_HttpRequest_Class()
     {
-        var req = new HttpRequest();
-        req.SetUrl("https://jsonplaceholder.typicode.com/todos/1");
+        var req = new HttpRequest(URL, HttpMethod.Get);
         req.AddHeader("v1", "2");
-        _ = await light.GetAsync(req);
+        _ = await light.SendAsync(req);
     }
 
     [Benchmark]
     public async Task Light_Directly()
     {
-        _ = await light.GetAsync("https://jsonplaceholder.typicode.com/todos/1");
+        _ = await light.GetAsync(URL);
     }
 
     [Benchmark]
     public async Task Light_Directly_With_Serialization()
     {
-        _ = await light.GetAsync<ResponseExample>("https://jsonplaceholder.typicode.com/todos/1");
+        _ = await light.GetAsync<List<ResponseExample>>(URL);
     }
 
     [Benchmark]
     public async Task RestSharp()
     {
-        var req = new RestRequest("https://jsonplaceholder.typicode.com/todos/1");
+        var req = new RestRequest(URL);
         req.AddHeader("v1", "2");
         _ = await rest.GetAsync(req);
     }
@@ -67,9 +67,9 @@ public class Md5VsSha256
     [Benchmark]
     public async Task RestSharp_WithSerialization()
     {
-        var req = new RestRequest("https://jsonplaceholder.typicode.com/todos/1");
+        var req = new RestRequest(URL);
         req.AddHeader("v1", "2");
-        _ = await rest.GetAsync<ResponseExample>(req);
+        _ = await rest.GetAsync<List<ResponseExample>>(req);
     }
 
 }
