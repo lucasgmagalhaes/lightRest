@@ -8,7 +8,7 @@ public class HttpRequest : IDisposable
 {
     internal readonly HttpRequestMessage _httpRequest;
 
-    private Dictionary<string, string>? _parameters;
+    private List<KeyValuePair<string?, string?>>? _parameters;
 
     public HttpRequest(string url, HttpMethod method)
     {
@@ -36,7 +36,7 @@ public class HttpRequest : IDisposable
 #if NET5_0_OR_GREATER
     [Obsolete("HttpRequestMessage.Properties has been deprecated. Use Options instead.")]
 #endif
-    public HttpRequest AddProperty(KeyValuePair<string, object> keyValue)
+    public HttpRequest AddProperty(KeyValuePair<string, object?> keyValue)
     {
         _httpRequest.Properties.Add(keyValue);
         return this;
@@ -110,9 +110,9 @@ public class HttpRequest : IDisposable
         if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(key);
         if (string.IsNullOrEmpty(value)) throw new ArgumentNullException(value);
 
-        _parameters ??= new Dictionary<string, string>();
+        _parameters ??= new();
 
-        _parameters.Add(key, value);
+        _parameters.Add(new KeyValuePair<string?, string?>(key, value));
         return this;
     }
 
