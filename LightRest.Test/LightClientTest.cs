@@ -1,9 +1,7 @@
 ﻿using LightRest.Testing.Api;
 using Microsoft.AspNetCore.Mvc.Testing;
-using System;
 using System.Net;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace LightRest.Test;
 
@@ -63,7 +61,7 @@ public class LightClientTest
         var game = new Game
         {
             Title = "game test",
-        };        
+        };
         var (response, code) = await _light.PostAsync(API_URL, JsonSerializer.Serialize(game));
         Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
         Assert.That(response, Is.Empty);

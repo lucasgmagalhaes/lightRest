@@ -1,7 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
-using LightRest;
 using RestSharp;
 using System.Text.Json.Serialization;
 
