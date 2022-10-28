@@ -4,25 +4,32 @@ using System.Text.Json;
 
 namespace LightRest;
 
-public class LightClient : IDisposable
+public sealed class LightClient : IDisposable
 {
-    protected internal readonly HttpClient _client;
-    protected internal string? _mediaType;
-    protected internal Encoding? _encoding;
-    protected internal bool _ensure;
-    protected internal JsonSerializerOptions? _serializerOptions;
+    internal readonly HttpClient _client;
+    internal string? _mediaType;
+    internal Encoding? _encoding;
+    internal bool _ensure;
+    internal JsonSerializerOptions? _serializerOptions;
 
     public LightClient()
     {
         _client ??= new();
     }
 
-    public LightClient(in HttpClient client) : this()
+    public LightClient(Encoding? encoding, JsonSerializerOptions? jsonSerializerOptions) : this()
+    {
+        _client ??= new();
+        _serializerOptions = jsonSerializerOptions;
+        _encoding = encoding;
+    }
+
+    public LightClient(in HttpClient client, Encoding? encoding = null, JsonSerializerOptions? jsonSerializerOptions = null) : this(encoding, jsonSerializerOptions)
     {
         _client = client;
     }
 
-    public LightClient(in string baseUrl) : this()
+    public LightClient(in string baseUrl, Encoding? encoding = null, JsonSerializerOptions? jsonSerializerOptions = null) : this(encoding, jsonSerializerOptions)
     {
         _client ??= new();
         _client.BaseAddress = new Uri(baseUrl);
@@ -106,7 +113,7 @@ public class LightClient : IDisposable
 
     public Task<(TResponse?, HttpStatusCode)> GetAsync<TResponse>(in Uri url,
                                                                   in object? body = default,
-                                                                  CancellationToken cancellationToken = default)where TResponse : class
+                                                                  CancellationToken cancellationToken = default) where TResponse : class
     {
         return SendAsync<TResponse>(url, HttpMethod.Get, body, cancellationToken);
     }
@@ -124,7 +131,7 @@ public class LightClient : IDisposable
 
     public Task<(TResponse?, HttpStatusCode)> PostAsync<TResponse>(in string url,
                                                                    in object? body = default,
-                                                                   CancellationToken cancellationToken = default)where TResponse : class
+                                                                   CancellationToken cancellationToken = default) where TResponse : class
     {
         return SendAsync<TResponse>(url, HttpMethod.Post, body, cancellationToken);
     }
@@ -138,7 +145,7 @@ public class LightClient : IDisposable
 
     public Task<(TResponse?, HttpStatusCode)> PostAsync<TResponse>(in Uri url,
                                                                    in object? body = default,
-                                                                   CancellationToken cancellationToken = default)where TResponse : class
+                                                                   CancellationToken cancellationToken = default) where TResponse : class
     {
         return SendAsync<TResponse>(url, HttpMethod.Post, body, cancellationToken);
     }
@@ -156,7 +163,7 @@ public class LightClient : IDisposable
 
     public Task<(TResponse?, HttpStatusCode)> DeleteAsync<TResponse>(in string url,
                                                                      in object? body = default,
-                                                                     CancellationToken cancellationToken = default)where TResponse : class
+                                                                     CancellationToken cancellationToken = default) where TResponse : class
     {
         return SendAsync<TResponse>(url, HttpMethod.Delete, body, cancellationToken);
     }
@@ -188,7 +195,7 @@ public class LightClient : IDisposable
 
     public Task<(TResponse?, HttpStatusCode)> PatchAsync<TResponse>(in string url,
                                                                     in object? body = default,
-                                                                    CancellationToken cancellationToken = default)where TResponse : class
+                                                                    CancellationToken cancellationToken = default) where TResponse : class
     {
         return SendAsync<TResponse>(url, HttpMethod.Patch, body, cancellationToken);
     }
@@ -202,7 +209,7 @@ public class LightClient : IDisposable
 
     public Task<(TResponse?, HttpStatusCode)> PatchAsync<TResponse>(in Uri url,
                                                                     in object? body = default,
-                                                                    CancellationToken cancellationToken = default)where TResponse : class
+                                                                    CancellationToken cancellationToken = default) where TResponse : class
     {
         return SendAsync<TResponse>(url, HttpMethod.Patch, body, cancellationToken);
     }
@@ -235,7 +242,7 @@ public class LightClient : IDisposable
 
     public Task<(TResponse?, HttpStatusCode)> PutAsync<TResponse>(in Uri url,
                                                                   in object? body = default,
-                                                                  CancellationToken cancellationToken = default)where TResponse : class
+                                                                  CancellationToken cancellationToken = default) where TResponse : class
     {
         return SendAsync<TResponse>(url, HttpMethod.Put, body, cancellationToken);
     }
@@ -253,7 +260,7 @@ public class LightClient : IDisposable
 
     public Task<(TResponse?, HttpStatusCode)> HeadAsync<TResponse>(in string url,
                                                                    in object? body = default,
-                                                                   CancellationToken cancellationToken = default)where TResponse : class
+                                                                   CancellationToken cancellationToken = default) where TResponse : class
     {
         return SendAsync<TResponse>(url, HttpMethod.Head, body, cancellationToken);
     }
@@ -267,7 +274,7 @@ public class LightClient : IDisposable
 
     public Task<(TResponse?, HttpStatusCode)> HeadAsync<TResponse>(in Uri url,
                                                                    in object? body = default,
-                                                                   CancellationToken cancellationToken = default)where TResponse : class
+                                                                   CancellationToken cancellationToken = default) where TResponse : class
     {
         return SendAsync<TResponse>(url, HttpMethod.Head, body, cancellationToken);
     }
