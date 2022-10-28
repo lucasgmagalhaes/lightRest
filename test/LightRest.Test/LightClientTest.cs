@@ -136,7 +136,7 @@ public class LightClientTest
 
     #region POST
     [Test]
-    public async Task GetAsync_Should_Post_String()
+    public async Task PostAsync_Should_Post_String()
     {
         var game = new Game
         {
@@ -146,7 +146,7 @@ public class LightClientTest
         Assert.Multiple(() =>
         {
             Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(response, Is.Empty);
+            Assert.That(response, Is.EqualTo("{\"id\":2,\"title\":\"game test\"}"));
         });
     }
 

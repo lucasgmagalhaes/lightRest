@@ -41,7 +41,7 @@ public class GamesController : ControllerBase
         // tests
     }
 
-    [HttpPut("post-empty")]
+    [HttpPut("put-empty")]
     public void PutEmpty()
     {
         // tests
@@ -64,7 +64,8 @@ public class GamesController : ControllerBase
     }
 
     [HttpPatch]
-    public void Patch([FromBody] Game _)
+    [Route("{id:int}")]
+    public void Patch(int id)
     {
         //test
     }
