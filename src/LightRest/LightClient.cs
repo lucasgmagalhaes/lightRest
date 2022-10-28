@@ -481,7 +481,7 @@ public sealed class LightClient : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(in bool disposing)
+    private void Dispose(in bool disposing)
     {
         if (disposing)
         {
