@@ -2,6 +2,7 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using RestSharp;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace LightRest.Benchmark;
@@ -22,52 +23,41 @@ public class ResponseExample
 }
 
 [MemoryDiagnoser]
+[MarkdownExporterAttribute.GitHub]
 public class Md5VsSha256
 {
     private LightClient light;
     private RestClient rest;
+    private HttpClient client;
 
     private const string URL = "https://jsonplaceholder.typicode.com/todos";
 
-    public Md5VsSha256()
+    [GlobalSetup]
+    public void Setup()
     {
         light = new LightClient();
         rest = new RestClient();
+        client = new HttpClient();
     }
 
     [Benchmark]
-    public async Task Light_With_HttpRequest_Class()
+    public async Task HttpClient()
+    {
+        var response = await client.GetAsync(URL);
+        _ = JsonSerializer.Deserialize<List<ResponseExample>>(await response.Content.ReadAsStringAsync());
+    }
+
+    [Benchmark]
+    public async Task LightRest()
     {
         var req = new HttpRequest(URL, HttpMethod.Get);
-        req.AddHeader("v1", "2");
         _ = await light.SendAsync(req);
-    }
-
-    [Benchmark]
-    public async Task Light_Directly()
-    {
-        _ = await light.GetAsync(URL);
-    }
-
-    [Benchmark]
-    public async Task Light_Directly_With_Serialization()
-    {
-        _ = await light.GetAsync<List<ResponseExample>>(URL);
     }
 
     [Benchmark]
     public async Task RestSharp()
     {
         var req = new RestRequest(URL);
-        req.AddHeader("v1", "2");
-        _ = await rest.GetAsync(req);
-    }
-
-    [Benchmark]
-    public async Task RestSharp_WithSerialization()
-    {
-        var req = new RestRequest(URL);
-        req.AddHeader("v1", "2");
         _ = await rest.GetAsync<List<ResponseExample>>(req);
     }
 
