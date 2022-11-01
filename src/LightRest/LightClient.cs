@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace LightRest;
 
-public sealed class LightClient : IDisposable
+public sealed class LightClient : IDisposable, ILightClient
 {
     internal readonly HttpClient _client;
     internal string? _mediaType;
@@ -35,31 +35,31 @@ public sealed class LightClient : IDisposable
         _client.BaseAddress = new Uri(baseUrl);
     }
 
-    public LightClient SetBaseUrl(in string url)
+    public ILightClient SetBaseUrl(in string url)
     {
         _client.BaseAddress = string.IsNullOrEmpty(url) ? null : new Uri(url);
         return this;
     }
 
-    public LightClient SetEnsureSuccess(in bool ensure)
+    public ILightClient SetEnsureSuccess(in bool ensure)
     {
         _ensure = ensure;
         return this;
     }
 
-    public LightClient SetMediaType(in string? media)
+    public ILightClient SetMediaType(in string? media)
     {
         _mediaType = media;
         return this;
     }
 
-    public LightClient SetEncoding(in Encoding? encoding)
+    public ILightClient SetEncoding(in Encoding? encoding)
     {
         _encoding = encoding;
         return this;
     }
 
-    public LightClient SetSerializerOptions(in JsonSerializerOptions options)
+    public ILightClient SetSerializerOptions(in JsonSerializerOptions options)
     {
         _serializerOptions = options;
         return this;
@@ -305,18 +305,6 @@ public sealed class LightClient : IDisposable
         var response = await _client.SendAsync(request, cancellationToken).ConfigureAwait(false);
         if (_ensure) response.EnsureSuccessStatusCode();
         return (await ReadContentAsync<TResponse>(response, cancellationToken).ConfigureAwait(false), response.StatusCode);
-    }
-
-    public Task<(string?, HttpStatusCode)> SendAsync(in string url, HttpMethod method, CancellationToken cancellationToken = default)
-    {
-        return SendAsync<string>(url, method, null, cancellationToken);
-    }
-
-    public Task<(TResponse?, HttpStatusCode)> SendAsync<TResponse>(in string url,
-                                                                   HttpMethod method,
-                                                                   CancellationToken cancellationToken = default) where TResponse : class
-    {
-        return SendAsync<TResponse>(url, method, null, cancellationToken);
     }
 
     #endregion
