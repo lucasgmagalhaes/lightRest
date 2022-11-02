@@ -52,7 +52,7 @@ public interface ILightClient
     /// The serialization for the given type (<see cref="string"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(string?, HttpStatusCode)> DeleteAsync(in string url, in object? body = null, CancellationToken cancellationToken = default);
+    Task<(string?, HttpStatusCode)> DeleteAsync(in string url, in object? body = default, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Send a DELETE request to the specified Uri with a cancellation token as an asynchronous operation
@@ -79,7 +79,7 @@ public interface ILightClient
     /// The serialization for the given type (<see cref="string"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(string?, HttpStatusCode)> DeleteAsync(in Uri url, in object? body = null, CancellationToken cancellationToken = default);
+    Task<(string?, HttpStatusCode)> DeleteAsync(in Uri url, in object? body = default, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Send a DELETE request to the specified Uri with a cancellation token as an asynchronous operation
@@ -107,7 +107,7 @@ public interface ILightClient
     /// The serialization for the given type (<typeparamref name="TResponse"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(TResponse?, HttpStatusCode)> DeleteAsync<TResponse>(in string url, in object? body = null, CancellationToken cancellationToken = default) where TResponse : class;
+    Task<(TResponse?, HttpStatusCode)> DeleteAsync<TResponse>(in string url, in object? body = default, CancellationToken cancellationToken = default) where TResponse : class;
 
     /// <summary>
     /// Send a DELETE request to the specified Uri with a cancellation token as an asynchronous operation
@@ -135,7 +135,7 @@ public interface ILightClient
     /// The serialization for the given type (<typeparamref name="TResponse"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(TResponse?, HttpStatusCode)> DeleteAsync<TResponse>(in Uri url, in object? body = null, CancellationToken cancellationToken = default) where TResponse : class;
+    Task<(TResponse?, HttpStatusCode)> DeleteAsync<TResponse>(in Uri url, in object? body = default, CancellationToken cancellationToken = default) where TResponse : class;
 
     /// <summary>
     /// Send a GET request to the specified Uri with a cancellation token as an asynchronous operation
@@ -162,7 +162,7 @@ public interface ILightClient
     /// The serialization for the given type (<typeparamref name="TResponse"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(string?, HttpStatusCode)> GetAsync(in string url, in object? body = null, CancellationToken cancellationToken = default);
+    Task<(string?, HttpStatusCode)> GetAsync(in string url, in object? body = default, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Send a GET request to the specified Uri with a cancellation token as an asynchronous operation
@@ -189,7 +189,7 @@ public interface ILightClient
     /// The serialization for the given type (<typeparamref name="TResponse"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(string?, HttpStatusCode)> GetAsync(in Uri url, in object? body = null, CancellationToken cancellationToken = default);
+    Task<(string?, HttpStatusCode)> GetAsync(in Uri url, in object? body = default, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Send a GET request to the specified Uri with a cancellation token as an asynchronous operation
@@ -217,7 +217,7 @@ public interface ILightClient
     /// The serialization for the given type (<typeparamref name="TResponse"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(TResponse?, HttpStatusCode)> GetAsync<TResponse>(in string url, in object? body = null, CancellationToken cancellationToken = default) where TResponse : class;
+    Task<(TResponse?, HttpStatusCode)> GetAsync<TResponse>(in string url, in object? body = default, CancellationToken cancellationToken = default) where TResponse : class;
 
     /// <summary>
     /// Send a GET request to the specified Uri with a cancellation token as an asynchronous operation
@@ -245,7 +245,7 @@ public interface ILightClient
     /// The serialization for the given type (<typeparamref name="TResponse"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(TResponse?, HttpStatusCode)> GetAsync<TResponse>(in Uri url, in object? body = null, CancellationToken cancellationToken = default) where TResponse : class;
+    Task<(TResponse?, HttpStatusCode)> GetAsync<TResponse>(in Uri url, in object? body = default, CancellationToken cancellationToken = default) where TResponse : class;
 
     /// <summary>
     ///  Send a GET request to the specified Uri and return the response body as a byte
@@ -350,7 +350,7 @@ public interface ILightClient
     /// The serialization for the given type (<see cref="string"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(string?, HttpStatusCode)> HeadAsync(in string url, in object? body = null, CancellationToken cancellationToken = default);
+    Task<(string?, HttpStatusCode)> HeadAsync(in string url, in object? body = default, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Send a HEAD request as an asynchronous operation.
@@ -377,35 +377,7 @@ public interface ILightClient
     /// The serialization for the given type (<see cref="string"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(string?, HttpStatusCode)> HeadAsync(in Uri url, in object? body = null, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Send a HEAD request as an asynchronous operation.
-    /// </summary>
-    /// <typeparam name="TResponse">Type for the response</typeparam>
-    /// <param name="url">The Uri the request is sent to.</param>
-    /// <param name="body">Optional body for the request</param>
-    /// <param name="cancellationToken">
-    ///  A cancellation token that can be used by other objects or threads to receive
-    ///  notice of cancellation.
-    /// </param>
-    /// <returns>
-    /// A tuple with the is a optional <typeparamref name="TResponse"/> and 
-    /// the <see cref="HttpStatusCode"/> of the request
-    /// </returns>
-    /// <exception cref="ArgumentNullException">The requestUri was null.</exception>
-    /// <exception cref="InvalidOperationException">
-    /// The request message was already sent by the System.Net.Http.HttpClient instance.
-    /// </exception>
-    /// <exception cref="HttpRequestException">
-    /// The request failed due to an underlying issue such as network connectivity, DNS
-    /// failure, server certificate validation or timeout.
-    /// </exception>
-    /// <exception cref="SerializationException">
-    /// The serialization for the given type (<typeparamref name="TResponse"/>) failed.
-    /// See inner exceptions for more details.
-    /// </exception>
-    Task<(TResponse?, HttpStatusCode)> HeadAsync<TResponse>(in string url, in object? body = null, CancellationToken cancellationToken = default) where TResponse : class;
+    Task<(string?, HttpStatusCode)> HeadAsync(in Uri url, in object? body = default, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Send a HEAD request as an asynchronous operation.
@@ -433,7 +405,35 @@ public interface ILightClient
     /// The serialization for the given type (<typeparamref name="TResponse"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(TResponse?, HttpStatusCode)> HeadAsync<TResponse>(in Uri url, in object? body = null, CancellationToken cancellationToken = default) where TResponse : class;
+    Task<(TResponse?, HttpStatusCode)> HeadAsync<TResponse>(in string url, in object? body = default, CancellationToken cancellationToken = default) where TResponse : class;
+
+    /// <summary>
+    /// Send a HEAD request as an asynchronous operation.
+    /// </summary>
+    /// <typeparam name="TResponse">Type for the response</typeparam>
+    /// <param name="url">The Uri the request is sent to.</param>
+    /// <param name="body">Optional body for the request</param>
+    /// <param name="cancellationToken">
+    ///  A cancellation token that can be used by other objects or threads to receive
+    ///  notice of cancellation.
+    /// </param>
+    /// <returns>
+    /// A tuple with the is a optional <typeparamref name="TResponse"/> and 
+    /// the <see cref="HttpStatusCode"/> of the request
+    /// </returns>
+    /// <exception cref="ArgumentNullException">The requestUri was null.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The request message was already sent by the System.Net.Http.HttpClient instance.
+    /// </exception>
+    /// <exception cref="HttpRequestException">
+    /// The request failed due to an underlying issue such as network connectivity, DNS
+    /// failure, server certificate validation or timeout.
+    /// </exception>
+    /// <exception cref="SerializationException">
+    /// The serialization for the given type (<typeparamref name="TResponse"/>) failed.
+    /// See inner exceptions for more details.
+    /// </exception>
+    Task<(TResponse?, HttpStatusCode)> HeadAsync<TResponse>(in Uri url, in object? body = default, CancellationToken cancellationToken = default) where TResponse : class;
 
     /// <summary>
     /// Send a POST request with a cancellation token as an asynchronous operation.
@@ -460,7 +460,7 @@ public interface ILightClient
     /// The serialization for the given type (<see cref="string"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(string?, HttpStatusCode)> PostAsync(in string url, in object? body = null, CancellationToken cancellationToken = default);
+    Task<(string?, HttpStatusCode)> PostAsync(in string url, in object? body = default, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Send a POST request with a cancellation token as an asynchronous operation.
@@ -487,7 +487,7 @@ public interface ILightClient
     /// The serialization for the given type (<see cref="string"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(string?, HttpStatusCode)> PostAsync(in Uri url, in object? body = null, CancellationToken cancellationToken = default);
+    Task<(string?, HttpStatusCode)> PostAsync(in Uri url, in object? body = default, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Send a POST request with a cancellation token as an asynchronous operation.
@@ -515,7 +515,7 @@ public interface ILightClient
     /// The serialization for the given type (<typeparamref name="TResponse"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(TResponse?, HttpStatusCode)> PostAsync<TResponse>(in string url, in object? body = null, CancellationToken cancellationToken = default) where TResponse : class;
+    Task<(TResponse?, HttpStatusCode)> PostAsync<TResponse>(in string url, in object? body = default, CancellationToken cancellationToken = default) where TResponse : class;
 
     /// <summary>
     /// Send a POST request with a cancellation token as an asynchronous operation.
@@ -543,7 +543,7 @@ public interface ILightClient
     /// The serialization for the given type (<typeparamref name="TResponse"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(TResponse?, HttpStatusCode)> PostAsync<TResponse>(in Uri url, in object? body = null, CancellationToken cancellationToken = default) where TResponse : class;
+    Task<(TResponse?, HttpStatusCode)> PostAsync<TResponse>(in Uri url, in object? body = default, CancellationToken cancellationToken = default) where TResponse : class;
 
     /// <summary>
     /// Send a PUT request to the specified Uri as an asynchronous operation.
@@ -570,7 +570,7 @@ public interface ILightClient
     /// The serialization for the given type (<see cref="string"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(string?, HttpStatusCode)> PutAsync(in string url, in object? body = null, CancellationToken cancellationToken = default);
+    Task<(string?, HttpStatusCode)> PutAsync(in string url, in object? body = default, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Send a PUT request to the specified Uri as an asynchronous operation.
@@ -597,7 +597,7 @@ public interface ILightClient
     /// The serialization for the given type (<see cref="string"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(string?, HttpStatusCode)> PutAsync(in Uri url, in object? body = null, CancellationToken cancellationToken = default);
+    Task<(string?, HttpStatusCode)> PutAsync(in Uri url, in object? body = default, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Send a PUT request with a cancellation token as an asynchronous operation.
@@ -625,7 +625,7 @@ public interface ILightClient
     /// The serialization for the given type (<typeparamref name="TResponse"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(TResponse?, HttpStatusCode)> PutAsync<TResponse>(in string url, in object? body = null, CancellationToken cancellationToken = default) where TResponse : class;
+    Task<(TResponse?, HttpStatusCode)> PutAsync<TResponse>(in string url, in object? body = default, CancellationToken cancellationToken = default) where TResponse : class;
 
     /// <summary>
     /// Send a PUT request with a cancellation token as an asynchronous operation.
@@ -653,7 +653,7 @@ public interface ILightClient
     /// The serialization for the given type (<typeparamref name="TResponse"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(TResponse?, HttpStatusCode)> PutAsync<TResponse>(in Uri url, in object? body = null, CancellationToken cancellationToken = default) where TResponse : class;
+    Task<(TResponse?, HttpStatusCode)> PutAsync<TResponse>(in Uri url, in object? body = default, CancellationToken cancellationToken = default) where TResponse : class;
 
     /// <summary>
     /// Send an HTTP request as an asynchronous operation.
