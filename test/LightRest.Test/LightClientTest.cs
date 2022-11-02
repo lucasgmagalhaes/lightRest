@@ -220,22 +220,7 @@ public class LightClientTest
     #region PUT
 
     [Test]
-    public async Task GetAsync_Should_Put_String()
-    {
-        var game = new Game
-        {
-            Title = "game test",
-        };
-        var (response, code) = await _light.PutAsync(API_URL + "/1", JsonSerializer.Serialize(game));
-        Assert.Multiple(() =>
-        {
-            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(response, Is.Empty);
-        });
-    }
-
-    [Test]
-    public async Task GetAsync_Should_Put_Object()
+    public async Task PutAsync_Should_Put_Send_Using_String()
     {
         var game = new Game
         {
@@ -245,18 +230,52 @@ public class LightClientTest
         Assert.Multiple(() =>
         {
             Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(response, Is.Empty);
+            Assert.That(response, Is.EqualTo("{\"id\":1,\"title\":\"game test\"}"));
         });
     }
 
     [Test]
-    public async Task GetAsync_Should_Put_Without_Body()
+    public async Task PutAsync_Should_Put_Send_Using_Uri()
     {
-        var (response, code) = await _light.PutAsync(API_URL + "/put-empty");
+        var game = new Game
+        {
+            Title = "game test",
+        };
+        var (response, code) = await _light.PutAsync(new Uri(API_URL + "/1"), game);
         Assert.Multiple(() =>
         {
             Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(response, Is.Empty);
+            Assert.That(response, Is.EqualTo("{\"id\":1,\"title\":\"game test\"}"));
+        });
+    }
+
+    [Test]
+    public async Task PutAsync_Should_Put_Send_Using_String_And_Serializing()
+    {
+        var game = new Game
+        {
+            Title = "game test",
+        };
+        var (response, code) = await _light.PutAsync<Game>(API_URL + "/1", game);
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(JsonSerializer.Serialize(response), Is.EqualTo("{\"id\":1,\"title\":\"game test\"}"));
+        });
+    }
+
+    [Test]
+    public async Task PutAsync_Should_Put_Send_Using_Uri_And_Serializing()
+    {
+        var game = new Game
+        {
+            Title = "game test",
+        };
+        var (response, code) = await _light.PutAsync<Game>(new Uri(API_URL + "/1"), game);
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(JsonSerializer.Serialize(response), Is.EqualTo("{\"id\":1,\"title\":\"game test\"}"));
         });
     }
 
@@ -286,7 +305,7 @@ public class LightClientTest
         {
             Title = "game test",
         };
-        var (response, code) = await _light.PatchAsync(new Uri(API_URL) + "/1", game);
+        var (response, code) = await _light.PatchAsync(new Uri(API_URL + "/1") , game);
         Assert.Multiple(() =>
         {
             Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
@@ -316,7 +335,7 @@ public class LightClientTest
         {
             Title = "game test",
         };
-        var (response, code) = await _light.PatchAsync<Game>(new Uri(API_URL) + "/1", game);
+        var (response, code) = await _light.PatchAsync<Game>(new Uri(API_URL + "/1"), game);
         Assert.Multiple(() =>
         {
             Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
@@ -373,4 +392,59 @@ public class LightClientTest
     }
 
     #endregion
+
+    #region HEAD
+
+    [Test]
+    public async Task HeadAsync_Should_Send_Get_By_String_Url()
+    {
+        var (response, code) = await _light.HeadAsync(API_URL + "/1");
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(response, Is.Empty);
+        });
+    }
+
+    [Test]
+    public async Task HeadAsync_Should_Send_Get_By_Uri_Url()
+    {
+        var (response, code) = await _light.HeadAsync(new Uri(API_URL + "/1"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(response, Is.Empty);
+        });
+    }
+
+    [Test]
+    public async Task HeadAsync_Should_Send_Get_By_String_Url_And_Serialializing()
+    {
+        var (response, code) = await _light.HeadAsync<string>(API_URL + "/1");
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(response, Is.Empty);
+        });
+    }
+
+    [Test]
+    public async Task HeadAsync_Should_Send_Get_By_Uri_Url_And_Serializing()
+    {
+        var (response, code) = await _light.HeadAsync<string>(new Uri(API_URL + "/1"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(response, Is.Empty);
+        });
+    }
+
+    #endregion
+
+    #region SEND
+
+
+
+    #endregion
+
 }

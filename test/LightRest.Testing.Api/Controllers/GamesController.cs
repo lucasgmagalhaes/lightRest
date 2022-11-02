@@ -35,26 +35,17 @@ public class GamesController : ControllerBase
         return game;
     }
 
-    [HttpPost("post-empty")]
-    public void PostEmpty()
-    {
-        // tests
-    }
-
-    [HttpPut("put-empty")]
-    public void PutEmpty()
-    {
-        // tests
-    }
 
     [HttpPut("{id}")]
-    public void Put([FromBody] Game game, [FromRoute] int id)
+    public Game Put([FromBody] Game game, [FromRoute] int id)
     {
         game.Id = id;
         var gameToUpdate = _games.ElementAt(id - 1);
 
         if (gameToUpdate is not null)
             _games[id - 1] = game;
+
+        return game;
     }
 
     [HttpDelete("{id}")]
