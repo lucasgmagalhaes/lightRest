@@ -8,7 +8,7 @@ namespace LightRest.Test;
 
 public class LightClientTest
 {
-    private LightClient _light;
+    private ILightClient _light;
 
     private LightClient _clientObj { get => (LightClient)_light; }
 
@@ -106,34 +106,6 @@ public class LightClientTest
             Is.EqualTo(JsonSerializer.Serialize(serializer)));
     }
 
-    [Test]
-    public async Task GetAsync_ShouldGet_String()
-    {
-        var (response, code) = await _light.GetAsync(API_URL);
-        Assert.Multiple(() =>
-        {
-            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(response, Is.Not.Null);
-        });
-        Assert.That(response?.Replace("\n", ""), Is.EqualTo(@"[{""id"":1,""title"":""elden ring""}]"));
-    }
-
-    [Test]
-    public async Task GetAsync_ShouldGet_Serialized()
-    {
-        var (response, code) = await _light.GetAsync<List<Game>>(API_URL);
-        Assert.Multiple(() =>
-        {
-            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(response, Is.Not.Null);
-        });
-        Assert.Multiple(() =>
-        {
-            Assert.That(response?[0].Id, Is.EqualTo(1));
-            Assert.That(response?[0].Title, Is.EqualTo("elden ring"));
-        });
-    }
-
     #region POST
     [Test]
     public async Task PostAsync_Should_Post_String()
@@ -142,7 +114,7 @@ public class LightClientTest
         {
             Title = "game test",
         };
-        var (response, code) = await _light.PostAsync(API_URL, JsonSerializer.Serialize(game));
+        var (response, code) = await _light.PostAsync(API_URL, game);
         Assert.Multiple(() =>
         {
             Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
@@ -153,11 +125,93 @@ public class LightClientTest
     [Test]
     public async Task GetAsync_Should_Post_Without_Body()
     {
-        var (response, code) = await _light.PostAsync(API_URL + "/post-empty");
+        var game = new Game
+        {
+            Title = "game test",
+        };
+        var (response, code) = await _light.PostAsync(new Uri(API_URL), game);
         Assert.Multiple(() =>
         {
             Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(response, Is.Empty);
+            Assert.That(response, Is.EqualTo("{\"id\":2,\"title\":\"game test\"}"));
+        });
+    }
+
+    [Test]
+    public async Task PostAsync_Should_Post_String_With_Response_Serialization()
+    {
+        var game = new Game
+        {
+            Title = "game test",
+        };
+        var (response, code) = await _light.PostAsync<Game>(API_URL, game);
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(JsonSerializer.Serialize(response), Is.EqualTo("{\"id\":2,\"title\":\"game test\"}"));
+        });
+    }
+
+    [Test]
+    public async Task GetAsync_Should_Post_Without_Body_Response_Serialization()
+    {
+        var game = new Game
+        {
+            Title = "game test",
+        };
+        var (response, code) = await _light.PostAsync<Game>(new Uri(API_URL), game);
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(JsonSerializer.Serialize(response), Is.EqualTo("{\"id\":2,\"title\":\"game test\"}"));
+        });
+    }
+
+    #endregion
+
+    #region DELETE
+
+    [Test]
+    public async Task DeleteAsync_Should_SendDelete_By_String_Url()
+    {
+        var (response, code) = await _light.DeleteAsync(API_URL + "/1");
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(response, Is.EqualTo("{\"id\":1,\"title\":\"elden ring\"}"));
+        });
+    }
+
+    [Test]
+    public async Task DeleteAsync_Should_SendDelete_By_Uri_Url()
+    {
+        var (response, code) = await _light.DeleteAsync(new Uri(API_URL + "/1"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(response, Is.EqualTo("{\"id\":1,\"title\":\"elden ring\"}"));
+        });
+    }
+
+    [Test]
+    public async Task DeleteAsync_Should_SendDelete_By_String_Url_And_Serialializing()
+    {
+        var (response, code) = await _light.DeleteAsync<Game>(API_URL + "/1");
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(JsonSerializer.Serialize(response), Is.EqualTo("{\"id\":1,\"title\":\"elden ring\"}"));
+        });
+    }
+
+    [Test]
+    public async Task DeleteAsync_Should_SendDelete_By_Uri_Url_And_Serializing()
+    {
+        var (response, code) = await _light.DeleteAsync<Game>(new Uri(API_URL + "/1"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(JsonSerializer.Serialize(response), Is.EqualTo("{\"id\":1,\"title\":\"elden ring\"}"));
         });
     }
 
@@ -211,22 +265,7 @@ public class LightClientTest
     #region PATCH
 
     [Test]
-    public async Task GetAsync_Should_Patch_String()
-    {
-        var game = new Game
-        {
-            Title = "game test",
-        };
-        var (response, code) = await _light.PatchAsync(API_URL + "/1", JsonSerializer.Serialize(game));
-        Assert.Multiple(() =>
-        {
-            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(response, Is.Empty);
-        });
-    }
-
-    [Test]
-    public async Task GetAsync_Should_Patch_Object()
+    public async Task PatchAsync_Should_Patch_String()
     {
         var game = new Game
         {
@@ -236,7 +275,100 @@ public class LightClientTest
         Assert.Multiple(() =>
         {
             Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(response, Is.Empty);
+            Assert.That(response, Is.EqualTo("{\"id\":1,\"title\":\"elden ring\"}"));
+        });
+    }
+
+    [Test]
+    public async Task PatchAsync_Should_Patch_Object()
+    {
+        var game = new Game
+        {
+            Title = "game test",
+        };
+        var (response, code) = await _light.PatchAsync(new Uri(API_URL) + "/1", game);
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(response, Is.EqualTo("{\"id\":1,\"title\":\"elden ring\"}"));
+        });
+    }
+
+    [Test]
+    public async Task PatchAsync_Should_Patch_Uri_Serializing()
+    {
+        var game = new Game
+        {
+            Title = "game test",
+        };
+        var (response, code) = await _light.PatchAsync<Game>(API_URL + "/1", game);
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(JsonSerializer.Serialize(response), Is.EqualTo("{\"id\":1,\"title\":\"elden ring\"}"));
+        });
+    }
+
+    [Test]
+    public async Task PatchAsync_Should_Patch_String_Serializing()
+    {
+        var game = new Game
+        {
+            Title = "game test",
+        };
+        var (response, code) = await _light.PatchAsync<Game>(new Uri(API_URL) + "/1", game);
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(JsonSerializer.Serialize(response), Is.EqualTo("{\"id\":1,\"title\":\"elden ring\"}"));
+        });
+    }
+
+    #endregion
+
+    #region GET
+
+    [Test]
+    public async Task GetAsync_Should_Send_Get_By_String_Url()
+    {
+        var (response, code) = await _light.GetAsync(API_URL + "/1");
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(response, Is.EqualTo("{\"id\":1,\"title\":\"elden ring\"}"));
+        });
+    }
+
+    [Test]
+    public async Task GetAsync_Should_Send_Get_By_Uri_Url()
+    {
+        var (response, code) = await _light.GetAsync(new Uri(API_URL + "/1"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(response, Is.EqualTo("{\"id\":1,\"title\":\"elden ring\"}"));
+        });
+    }
+
+    [Test]
+    public async Task GetAsync_Should_Send_Get_By_String_Url_And_Serialializing()
+    {
+        var (response, code) = await _light.GetAsync<Game>(API_URL + "/1");
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(JsonSerializer.Serialize(response), Is.EqualTo("{\"id\":1,\"title\":\"elden ring\"}"));
+        });
+    }
+
+    [Test]
+    public async Task GetAsync_Should_Send_Get_By_Uri_Url_And_Serializing()
+    {
+        var (response, code) = await _light.GetAsync<Game>(new Uri(API_URL + "/1"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(code, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(JsonSerializer.Serialize(response), Is.EqualTo("{\"id\":1,\"title\":\"elden ring\"}"));
         });
     }
 

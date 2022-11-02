@@ -598,7 +598,7 @@ public interface ILightClient
     /// See inner exceptions for more details.
     /// </exception>
     Task<(string?, HttpStatusCode)> PutAsync(in Uri url, in object? body = null, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Send a PUT request with a cancellation token as an asynchronous operation.
     /// </summary>
@@ -757,8 +757,8 @@ public interface ILightClient
     /// The serialization for the given type (<typeparamref name="TResponse"/>) failed.
     /// See inner exceptions for more details.
     /// </exception>
-    Task<(TResponse?, HttpStatusCode)> SendAsync<TResponse>(in HttpRequest request, CancellationToken cancellationToken = default) where TResponse : class;    
-    
+    Task<(TResponse?, HttpStatusCode)> SendAsync<TResponse>(in HttpRequest request, CancellationToken cancellationToken = default) where TResponse : class;
+
     /// <summary>
     /// Defines the base url for the client.
     /// </summary>
@@ -792,4 +792,15 @@ public interface ILightClient
     /// <param name="options"></param>
     /// <returns></returns>
     ILightClient SetSerializerOptions(in JsonSerializerOptions options);
+
+#if !NETSTANDARD2_0
+    Task<(string?, HttpStatusCode)> PatchAsync(in string url, in object? body = default, CancellationToken cancellationToken = default);
+
+    Task<(TResponse?, HttpStatusCode)> PatchAsync<TResponse>(in string url, in object? body = default, CancellationToken cancellationToken = default) where TResponse : class;
+
+    Task<(string?, HttpStatusCode)> PatchAsync(in Uri url, in object? body = default, CancellationToken cancellationToken = default);
+
+    Task<(TResponse?, HttpStatusCode)> PatchAsync<TResponse>(in Uri url, in object? body = default, CancellationToken cancellationToken = default) where TResponse : class;
+
+#endif
 }

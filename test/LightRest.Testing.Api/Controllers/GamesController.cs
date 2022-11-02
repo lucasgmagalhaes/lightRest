@@ -21,10 +21,10 @@ public class GamesController : ControllerBase
         };
     }
 
-    [HttpGet]
-    public List<Game> Get()
+    [HttpGet("{id}")]
+    public Game Get([FromRoute] int id)
     {
-        return _games;
+        return _games[id - 1];
     }
 
     [HttpPost]
@@ -57,17 +57,18 @@ public class GamesController : ControllerBase
             _games[id - 1] = game;
     }
 
-    [HttpGet("{id}")]
-    public void Delete([FromRoute] int id)
+    [HttpDelete("{id}")]
+    public Game Delete([FromRoute] int id)
     {
-        _games.RemoveAt(id - 1);
+        var removed = _games[id - 1];
+        return removed;
     }
 
     [HttpPatch]
     [Route("{id:int}")]
-    public void Patch(int id)
+    public Game Patch(int id)
     {
-        //test
+        return _games[id - 1];
     }
 
     [HttpHead("{id}")]
