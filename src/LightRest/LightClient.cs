@@ -186,7 +186,7 @@ public sealed class LightClient : ILightClient
 
     public Task<(TResponse?, HttpStatusCode)> PostAsync<TResponse, TRequest>(in string url,
                                                                in TRequest? body = default,
-                                                               CancellationToken cancellationToken = default) 
+                                                               CancellationToken cancellationToken = default)
         where TResponse : class
         where TRequest : class
     {
@@ -330,7 +330,7 @@ public sealed class LightClient : ILightClient
 
     public Task<(TResponse?, HttpStatusCode)> PutAsync<TResponse, TRequest>(in string url,
                                                               in TRequest? body = default,
-                                                              CancellationToken cancellationToken = default) 
+                                                              CancellationToken cancellationToken = default)
         where TResponse : class
         where TRequest : class
     {
@@ -390,7 +390,7 @@ public sealed class LightClient : ILightClient
 
     public Task<(TResponse?, HttpStatusCode)> HeadAsync<TResponse, TRequest>(in Uri url,
                                                                    in TRequest? body = default,
-                                                                   CancellationToken cancellationToken = default) 
+                                                                   CancellationToken cancellationToken = default)
         where TResponse : class
         where TRequest : class
     {
@@ -416,7 +416,6 @@ public sealed class LightClient : ILightClient
     {
         return SendAsync<TResponse>(request._httpRequest, cancellationToken);
     }
-
 
     public async Task<(TResponse?, HttpStatusCode)> SendAsync<TResponse>(HttpRequestMessage request,
                                                                          CancellationToken cancellationToken = default) where TResponse : class
@@ -527,7 +526,7 @@ public sealed class LightClient : ILightClient
 
         if (body is not null)
         {
-            httpRequest.Content = new StringContent(Serialize(body), _encoding, _mediaType);
+            httpRequest.Content = new StringContent(JsonHelper.Serialize(body, _serializerOptions), _encoding, _mediaType);
         }
         return httpRequest;
     }
@@ -548,84 +547,28 @@ public sealed class LightClient : ILightClient
 
         if (typeT == typeof(string))
         {
-            return await ReadAsStringByFrameWorkVersionAsync(response.Content, cancellationToken)
-                    .ConfigureAwait(false) as TResponse;
+            return await HttpContentHelper.ReadAsStringAsync(response.Content, cancellationToken).ConfigureAwait(false) as TResponse;
         }
 
         if (typeT == typeof(Stream))
         {
-            return await ReadAsStreamAsyncByFrameWorkVersionAsync(response.Content, cancellationToken).ConfigureAwait(false) as TResponse;
+            return await HttpContentHelper.ReadAsStreamAsync(response.Content, cancellationToken).ConfigureAwait(false) as TResponse;
         }
 
         if (typeT == typeof(byte[]))
         {
-            return await ReadAsByteArrayAsyncByFrameWorkVersionAsync(response.Content, cancellationToken)
-                .ConfigureAwait(false) as TResponse;
+            return await HttpContentHelper.ReadAsByteArrayAsync(response.Content, cancellationToken).ConfigureAwait(false) as TResponse;
         }
-
-        using var contentStream = await ReadAsStreamAsyncByFrameWorkVersionAsync(response.Content, cancellationToken)
-            .ConfigureAwait(false);
-
-        if (contentStream is null) return default;
 
         try
         {
-            return await JsonSerializer.DeserializeAsync<TResponse>(contentStream, _serializerOptions, cancellationToken).ConfigureAwait(false);
+            return await HttpContentHelper.ReadAsJsonAsync<TResponse>(response.Content, _serializerOptions, cancellationToken).ConfigureAwait(false);
         }
         catch (JsonException ex)
         {
-            var stringResponse = await ReadAsStringByFrameWorkVersionAsync(response.Content, cancellationToken).ConfigureAwait(false);
+            var stringResponse = await HttpContentHelper.ReadAsStringAsync(response.Content, cancellationToken).ConfigureAwait(false);
             throw new SerializationException(stringResponse, "Error when attempting to serialize response. See exception details", ex);
         }
-    }
-
-    private string Serialize<T>(in T val)
-    {
-        if (val is string valString)
-        {
-            if (string.IsNullOrEmpty(valString))
-            {
-                return string.Empty;
-            }
-            else
-            {
-                return valString;
-            }
-        }
-        return JsonSerializer.Serialize(val, _serializerOptions);
-    }
-
-#pragma warning disable S1172 // Unused method parameters should be removed
-    private static Task<string> ReadAsStringByFrameWorkVersionAsync(in HttpContent content, CancellationToken cancellationToken)
-#pragma warning restore S1172 // Unused method parameters should be removed
-    {
-#if NETSTANDARD2_0
-        return content.ReadAsStringAsync();
-#else
-        return content.ReadAsStringAsync(cancellationToken);
-#endif
-    }
-
-#pragma warning disable S1172 // Unused method parameters should be removed
-    private static Task<byte[]> ReadAsByteArrayAsyncByFrameWorkVersionAsync(in HttpContent content, CancellationToken cancellationToken)
-#pragma warning restore S1172 // Unused method parameters should be removed
-    {
-#if NETSTANDARD2_0
-        return content.ReadAsByteArrayAsync();
-#else
-        return content.ReadAsByteArrayAsync(cancellationToken);
-#endif
-    }
-
-#pragma warning disable S1172 // Unused method parameters should be removed
-    private static Task<Stream> ReadAsStreamAsyncByFrameWorkVersionAsync(in HttpContent content, CancellationToken cancellationToken)
-#pragma warning restore S1172 // Unused method parameters should be removed
-    {
-#if NETSTANDARD2_0
-        return content.ReadAsStreamAsync();
-#else
-        return content.ReadAsStreamAsync(cancellationToken);
-#endif
     }
 
     public void Dispose()

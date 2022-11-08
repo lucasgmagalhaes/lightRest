@@ -30,7 +30,7 @@ public class Md5VsSha256
     private RestClient rest;
     private HttpClient client;
 
-    private const string URL = "https://jsonplaceholder.typicode.com/todos";
+    private const string URL = "http://localhost:49153/todos";
 
     [GlobalSetup]
     public void Setup()
@@ -51,7 +51,7 @@ public class Md5VsSha256
     public async Task LightRest()
     {
         var req = new HttpRequest(URL, HttpMethod.Get);
-        _ = await light.SendAsync(req);
+        _ = await light.SendAsync<List<ResponseExample>>(req);
     }
 
     [Benchmark]
