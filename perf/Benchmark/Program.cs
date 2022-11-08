@@ -26,7 +26,7 @@ public class ResponseExample
 [MarkdownExporterAttribute.GitHub]
 public class Md5VsSha256
 {
-    private LightClient light;
+    private ILightClient light;
     private RestClient rest;
     private HttpClient client;
 
