@@ -37,6 +37,12 @@ public class LightClientTest
     }
 
     [Test]
+    public void Should_Init_With_All_Params()
+    {
+        var client = new LightClient();
+    }
+
+    [Test]
     public void AddDefaultHeader_Should_Set_Header()
     {
         _light.AddDefaultHeader("test", "val");

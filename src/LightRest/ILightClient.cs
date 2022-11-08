@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.Json;
 
 namespace LightRest;
-public interface ILightClient
+public interface ILightClient : IDisposable
 {
     /// <summary>
     /// Adds the specified header and its value into the <see cref="System.Net.Http.Headers.HttpHeaders"/> collection.
