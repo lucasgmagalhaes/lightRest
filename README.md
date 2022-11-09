@@ -4,9 +4,9 @@
 
 ## Motivation
 
-This lib is indead to be a lightweight alternative for RestSharp. It **DOES NOT** intend to be a directly
+This lib is indeed to be a lightweight alternative for RestSharp. It **DOES NOT** intend to be a directly
 concurrent of RestSharp. Only to be an possible alternative for simple scenarios. This way, do not 
-spect great features or threatments in this lib, only a simple, request-response with serialization/deserialization
+expect great features or treatments in this lib, only a simple, request-response with serialization/deserialization
 of provided parameters and a HttpCode return.
 
 ## Features
@@ -25,10 +25,15 @@ the class `HttpRequest`.
 
 ## Benchmark
 
-As mentioned, the goal of this library is only to be a lightweight version of the amazin RestSharp version
+As mentioned, the goal of this library is only to be a lightweight version of the amazing RestSharp lib
 and to encapsulate the native class `HttpClient` that the .NET already has.
 
-The above table shows a benchmark between `LightRest`, `RestSharp` and the native `HttpClient`:
+The above table shows a benchmark between `LightRest`, `RestSharp` and the native `HttpClient`, where
+a GET request is made to an API which returns a response with `100ms` of delay per request.
+
+Two tests were made: One with a `1kb` response size. and another one with a `103.27kb` response size
+
+All tests were made with the following configs:
 
 ``` ini
 
@@ -38,12 +43,27 @@ AMD Ryzen 5 2600, 1 CPU, 12 logical and 6 physical cores
   [Host]     : .NET 6.0.9 (6.0.922.41905), X64 RyuJIT
   DefaultJob : .NET 6.0.9 (6.0.922.41905), X64 RyuJIT
 
-
 ```
-|                                      Method |     Mean |    Error |    StdDev |   Median | Allocated |
-|-------------------------------------------- |---------:|---------:|----------:|---------:|----------:|
-| LightRest_HttpRequest_Without_Serialization | 163.7 ms |  1.69 ms |   1.50 ms | 163.4 ms |    109 KB |
-|    LightRest_Directly_Without_Serialization | 178.1 ms |  3.47 ms |   3.56 ms | 177.5 ms |    109 KB |
-|       LightRest_Directly_With_Serialization | 163.1 ms |  2.96 ms |   2.77 ms | 162.7 ms |    142 KB |
-|             RestSharp_Without_Serialization | 341.5 ms | 17.12 ms |  47.71 ms | 327.7 ms |    279 KB |
-|                RestSharp_With_Serialization | 327.9 ms | 35.07 ms | 101.18 ms | 350.1 ms |    338 KB |
+
+#### 1kb response size
+
+In comparison, LightRest is **1,25%** faster than RestSharp, but allocates **87,1%** less memory.
+
+|     Method |     Mean |   Error |  StdDev | Allocated |
+|----------- |---------:|--------:|--------:|----------:|
+| HttpClient | 103.3 ms | 1.17 ms | 0.98 ms |      7 KB |
+|  LightRest | 103.5 ms | 1.46 ms | 1.36 ms |      7 KB |
+|  RestSharp | 104.0 ms | 1.62 ms | 1.51 ms |     65 KB |
+
+
+#### 103.27kb response size
+
+
+|     Method |     Mean |   Error |  StdDev | Allocated |
+|----------- |---------:|--------:|--------:|----------:|
+| HttpClient | 107.6 ms | 1.30 ms | 1.15 ms |    444 KB |
+|  LightRest | 107.4 ms | 1.43 ms | 1.34 ms |    445 KB |
+|  RestSharp | 107.9 ms | 1.26 ms | 1.17 ms |  1,264 KB |
+
+In this case, lightRest still is faster (**0.83%**), but had a reduction in allocation percentile compared to the first test (**64,91%**).
+In relation to the `HttpClient` itself, you may notice that the difference between it and lightRest is basically irrelevant.

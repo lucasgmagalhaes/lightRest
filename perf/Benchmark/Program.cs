@@ -2,6 +2,7 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using RestSharp;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -30,7 +31,7 @@ public class Md5VsSha256
     private RestClient rest;
     private HttpClient client;
 
-    private const string URL = "http://localhost:49153/todos";
+    private const string URL = "http://localhost:49156/todos";
 
     [GlobalSetup]
     public void Setup()
@@ -44,7 +45,7 @@ public class Md5VsSha256
     public async Task HttpClient()
     {
         var response = await client.GetAsync(URL);
-        _ = JsonSerializer.Deserialize<List<ResponseExample>>(await response.Content.ReadAsStringAsync());
+        _ = await response.Content.ReadFromJsonAsync<List<ResponseExample>>();
     }
 
     [Benchmark]
