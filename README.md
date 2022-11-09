@@ -9,6 +9,14 @@ concurrent of RestSharp. Only to be an possible alternative for simple scenarios
 expect great features or treatments in this lib, only a simple, request-response with serialization/deserialization
 of provided parameters and a HttpCode return.
 
+
+## Goal
+
+The project goal is to proportionate a wrapper for the well known `HttpClient` and as light as possible. The response of all requests 
+are a tuple with the response (as `string` or serialized in a given type), and the HttpStatusCode. To reduce in maximum the memory allocation 
+made.
+
+
 ## Features
 
 All http methods are `async` as default. They include:
