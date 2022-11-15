@@ -42,6 +42,13 @@ mostly used in applications. The implementation isn't equal to the one made by `
 
 The print above shows the implementation used for `HttpClient`:
 
+<div align="center">
+  <br />
+  <p>
+    <img width="120" height="120" src="https://github.com/lucasgmagalhaes/lightRest/blob/70b1e349bb2b5564d33efa2659d0f384c92f2d27/assets/http_benchmark_code.png" />
+  </p>
+</div>
+
 All tests were made with the following configs:
 
 ``` ini
