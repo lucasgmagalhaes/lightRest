@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 
@@ -519,11 +520,6 @@ public sealed class LightClient : ILightClient
     {
         var typeT = typeof(TResponse);
 
-        if (response.Content == null)
-        {
-            return default;
-        }
-
         if (typeT == typeof(string))
         {
             return await HttpContentHelper.ReadAsStringAsync(response.Content, cancellationToken).ConfigureAwait(false) as TResponse;
@@ -550,12 +546,14 @@ public sealed class LightClient : ILightClient
         }
     }
 
+    [ExcludeFromCodeCoverage]
     public void Dispose()
     {
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
 
+    [ExcludeFromCodeCoverage]
     private void Dispose(in bool disposing)
     {
         if (disposing)

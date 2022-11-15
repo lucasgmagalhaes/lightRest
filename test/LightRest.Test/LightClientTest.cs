@@ -6,6 +6,11 @@ using System.Text.Json;
 
 namespace LightRest.Test;
 
+internal class WrongClass
+{
+    public int MyProperty { get; set; }
+}
+
 public class LightClientTest
 {
     private ILightClient _light;
@@ -706,6 +711,54 @@ public class LightClientTest
         Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK));
     }
 
+    [Test]
+    [TestCase(Method.GET)]
+    [TestCase(Method.DELETE)]
+    [TestCase(Method.OPTIONS)]
+    [TestCase(Method.PUT)]
+    public async Task SendAsync_Should_Make_Request_Binding_Result(Method httpMethod)
+    {
+        _light.MediaType = "application/json";
+        var request = new HttpRequest(API_URL, httpMethod);
+        request.SetBody(JsonSerializer.Serialize(new Game()));
+        var (_, statusCode) = await _light.SendAsync<Game>(request);
+        Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK));
+    }
+
+    [Test]
+    public async Task SendAsync_And_Get_String()
+    {
+        var request = new HttpRequest(API_URL, Method.GET);
+        var (_, statusCode) = await _light.SendAsync<string>(request);
+        Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK));
+    }
+
+    [Test]
+    public async Task SendAsync_And_Get_Stream()
+    {
+        var request = new HttpRequest(API_URL, Method.GET);
+        var (_, statusCode) = await _light.SendAsync<Stream>(request);
+        Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK));
+    }
+
+    [Test]
+    public void Request_Should_Throw_Error()
+    {
+        Assert.ThrowsAsync<SerializationException>(async () =>
+        {
+            var request = new HttpRequest(API_URL, Method.GET);
+            await _light.SendAsync<IEnumerable<WrongClass>>(request);
+        });
+    }
+
+    [Test]
+    public async Task SendAsync_And_Get_ByteArray()
+    {
+        var request = new HttpRequest(API_URL, Method.GET);
+        var (_, statusCode) = await _light.SendAsync<byte[]>(request);
+        Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK));
+    }
+
     #endregion
 
     [Test]
@@ -730,5 +783,58 @@ public class LightClientTest
         var keyValue = _clientObj._client.DefaultRequestHeaders.FirstOrDefault();
         Assert.That(keyValue.Key, Is.EqualTo("test"));
         Assert.That(keyValue.Value.ToList()[0], Is.EqualTo("val"));
+    }
+
+    [Test]
+    public async Task GetStringAsync_Should_Get_String()
+    {
+        var str = await _light.GetStringAsync(API_URL);
+        Assert.NotNull(str);
+    }
+
+    [Test]
+    public async Task GetStringAsync_Should_Get_String_From_Uri()
+    {
+        var str = await _light.GetStringAsync(new Uri(API_URL));
+        Assert.NotNull(str);
+    }
+
+    [Test]
+    public async Task GetStreamAsync_Should_Get_String_From_Uri()
+    {
+        var str = await _light.GetStreamAsync(new Uri(API_URL));
+        Assert.NotNull(str);
+    }
+
+    [Test]
+    public async Task GetStreamAsync_Should_Get_String()
+    {
+        var str = await _light.GetStreamAsync(API_URL);
+        Assert.NotNull(str);
+    }
+
+    [Test]
+    public async Task GetByteArrayAsync_Should_Get_String_From_Uri()
+    {
+        var str = await _light.GetByteArrayAsync(new Uri(API_URL));
+        Assert.NotNull(str);
+    }
+
+    [Test]
+    public async Task GetByteArrayAsync_Should_Get_String()
+    {
+        var str = await _light.GetByteArrayAsync(API_URL);
+        Assert.NotNull(str);
+    }
+
+    [Test]
+    public void Should_Cancell_Pending_Requests()
+    {
+        Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            var task = _light.GetAsync(API_URL + "/long");
+            _light.CancelPendingRequests();
+            var result = await task;
+        });
     }
 }

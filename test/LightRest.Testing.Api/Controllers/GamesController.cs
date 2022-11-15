@@ -42,6 +42,12 @@ public class GamesController : ControllerBase
         return game;
     }
 
+    [HttpGet("long")]
+    public async Task Long_Task()
+    {
+        await Task.Delay(1000);
+    }
+
     [HttpPost]
     public Game Post([FromBody] Game game)
     {
@@ -86,7 +92,7 @@ public class GamesController : ControllerBase
     {
         return game;
     }
-    
+
     [HttpHead("return-body")]
     public Game HeadReturnBody([FromBody] Game game)
     {

@@ -1039,6 +1039,7 @@ public interface ILightClient : IDisposable
     /// <returns></returns>
     ILightClient SetBaseUrl(in string url);
 
+    void CancelPendingRequests();
 
 #if !NETSTANDARD2_0
     Task<(string?, HttpStatusCode)> PatchAsync(in string url, in object? body = default, CancellationToken cancellationToken = default);
