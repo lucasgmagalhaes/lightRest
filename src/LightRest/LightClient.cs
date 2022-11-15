@@ -794,7 +794,7 @@ public sealed class LightClient : ILightClient
     private async Task<(TResponse?, HttpStatusCode)> SendAsync<TResponse>(HttpRequestMessage request,
                                                                      CancellationToken cancellationToken = default) where TResponse : class
     {
-        using var response = await _client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        using var response = await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
         if (EnsureSuccess) response.EnsureSuccessStatusCode();
         return (await ReadContentAsync<TResponse>(response, cancellationToken).ConfigureAwait(false), response.StatusCode);
     }

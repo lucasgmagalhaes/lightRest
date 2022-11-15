@@ -31,7 +31,7 @@ public class Md5VsSha256
     private RestClient rest;
     private HttpClient client;
 
-    private const string URL = "http://localhost:49155/todos";
+    private const string URL = "http://localhost:49154/todos";
 
     [Params(1, 10, 100, 1000)]
     public int Count { get; set; }
@@ -48,7 +48,8 @@ public class Md5VsSha256
     public async Task HttpClient()
     {
         var response = await client.GetAsync(URL + $"/{Count}");
-        _ = await response.Content.ReadFromJsonAsync<List<ResponseExample>>();
+        var str = await response.Content.ReadAsStringAsync();
+        _ = JsonSerializer.Deserialize<List<ResponseExample>>(str);
     }
 
     [Benchmark]
@@ -63,7 +64,6 @@ public class Md5VsSha256
         var req = new RestRequest(URL + $"/{Count}");
         _ = await rest.GetAsync<List<ResponseExample>>(req);
     }
-
 }
 
 public static class Program
