@@ -28,7 +28,10 @@ public class GamesController : ControllerBase
     }
 
     [HttpGet]
-    public Game Fetch()
+    [HttpDelete]
+    [HttpOptions]
+    [HttpPut]
+    public Game? Fetch()
     {
         return _games.FirstOrDefault();
     }

@@ -13,11 +13,7 @@ public class HttpRequest : IDisposable
 
     public HttpRequest(string url, Method method)
     {
-        _httpRequest = new HttpRequestMessage
-        {
-            Method = method.GetHttpMethod(),
-            RequestUri = new Uri(url)
-        };
+        _httpRequest = new HttpRequestMessage(method.GetHttpMethod(), url);
     }
 
     public HttpRequest()

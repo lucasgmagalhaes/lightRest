@@ -696,12 +696,13 @@ public class LightClientTest
     [TestCase(Method.GET)]
     [TestCase(Method.DELETE)]
     [TestCase(Method.OPTIONS)]
-    [TestCase(Method.HEAD)]
     [TestCase(Method.PUT)]
-    [TestCase(Method.POST)]
     public async Task SendAsync_Should_Make_Request(Method httpMethod)
     {
-        var (_, statusCode) = await _light.SendAsync(new HttpRequest(API_URL, httpMethod));
+        _light.MediaType = "application/json";
+        var request = new HttpRequest(API_URL, httpMethod);
+        request.SetBody(JsonSerializer.Serialize(new Game()));
+        var (_, statusCode) = await _light.SendAsync(request);
         Assert.That(statusCode, Is.EqualTo(HttpStatusCode.OK));
     }
 

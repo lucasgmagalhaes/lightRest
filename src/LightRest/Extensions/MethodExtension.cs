@@ -15,11 +15,11 @@ internal static class MethodExtension
             Method.PUT => HttpMethod.Put,
             Method.DELETE => HttpMethod.Delete,
             Method.TRACE => HttpMethod.Trace,
-
+            Method.HEAD => HttpMethod.Head,
 #if !NETSTANDARD2_0
             Method.PATCH => HttpMethod.Patch,
 #endif
-            _ => throw new ArgumentNullException($"Method {method} not found")
+            _ => throw new ArgumentNullException($"Method {method} not mapped")
         };
     }
 }
