@@ -1,4 +1,5 @@
 using Benchmark.Common;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,9 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
 
-app.MapGet("/todos", async () =>
+app.MapGet("/todos/{toGenerate}", ([FromRoute] int toGenerate) =>
 {
-    var todos = Enumerable.Range(1, 5).Select(index =>
+    var todos = Enumerable.Range(1, toGenerate).Select(index =>
         new ResponseExample
         {
             Completed = true,
@@ -17,7 +18,6 @@ app.MapGet("/todos", async () =>
             Title = Guid.NewGuid().ToString(),
             UserId = DateTime.Now.Millisecond,
         });
-    await Task.Delay(100);
 
     return todos;
 });

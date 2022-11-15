@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using LightRest.Extensions;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 [assembly: InternalsVisibleTo("LightRest.Test")]
@@ -10,11 +11,11 @@ public class HttpRequest : IDisposable
 
     private List<KeyValuePair<string?, string?>>? _parameters;
 
-    public HttpRequest(string url, HttpMethod method)
+    public HttpRequest(string url, Method method)
     {
         _httpRequest = new HttpRequestMessage
         {
-            Method = method,
+            Method = method.GetHttpMethod(),
             RequestUri = new Uri(url)
         };
     }

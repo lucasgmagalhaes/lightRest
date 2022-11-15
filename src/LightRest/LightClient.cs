@@ -8,29 +8,35 @@ public sealed class LightClient : ILightClient
 {
     #region PROPERTIES
 
-    internal readonly HttpClient _client;
-    internal string? _mediaType;
-    internal Encoding? _encoding;
-    internal bool _ensure;
-    internal JsonSerializerOptions? _serializerOptions;
-
+    public string? MediaType { get; set; }
+    public Encoding? Encoding { get; set; }
+    public bool EnsureSuccess { get; set; }
+    public JsonSerializerOptions SerializerOptions { get; set; }
     public TimeSpan Timeout { get => _client.Timeout; set => _client.Timeout = value; }
-
     public long MaxResponseContentBufferSize { get => _client.MaxResponseContentBufferSize; set => _client.MaxResponseContentBufferSize = value; }
+
+    internal readonly HttpClient _client;
 
     #endregion
 
     #region CONSTRUCTORS
     public LightClient()
     {
+        // Inits JsonSerializerOptions so It can be cached
+        SerializerOptions ??= new JsonSerializerOptions();
         _client ??= new();
     }
 
     public LightClient(in Encoding? encoding, in JsonSerializerOptions? jsonSerializerOptions) : this()
     {
         _client ??= new();
-        _serializerOptions = jsonSerializerOptions;
-        _encoding = encoding;
+
+        if (jsonSerializerOptions is not null)
+        {
+            SerializerOptions = jsonSerializerOptions;
+        }
+
+        Encoding = encoding;
     }
 
     public LightClient(in HttpClient client,
@@ -53,30 +59,6 @@ public sealed class LightClient : ILightClient
     public ILightClient SetBaseUrl(in string url)
     {
         _client.BaseAddress = string.IsNullOrEmpty(url) ? null : new Uri(url);
-        return this;
-    }
-
-    public ILightClient SetEnsureSuccess(in bool ensure)
-    {
-        _ensure = ensure;
-        return this;
-    }
-
-    public ILightClient SetMediaType(in string? media)
-    {
-        _mediaType = media;
-        return this;
-    }
-
-    public ILightClient SetEncoding(in Encoding? encoding)
-    {
-        _encoding = encoding;
-        return this;
-    }
-
-    public ILightClient SetSerializerOptions(in JsonSerializerOptions options)
-    {
-        _serializerOptions = options;
         return this;
     }
 
@@ -279,7 +261,7 @@ public sealed class LightClient : ILightClient
 
     public Task<(TResponse?, HttpStatusCode)> PatchAsync<TResponse, TRequest>(in string url,
                                                                 in TRequest? body = default,
-                                                                CancellationToken cancellationToken = default) 
+                                                                CancellationToken cancellationToken = default)
         where TResponse : class
         where TRequest : class
     {
@@ -288,7 +270,7 @@ public sealed class LightClient : ILightClient
 
     public Task<(TResponse?, HttpStatusCode)> PatchAsync<TResponse, TRequest>(in Uri url,
                                                                     in TRequest? body = default,
-                                                                    CancellationToken cancellationToken = default) 
+                                                                    CancellationToken cancellationToken = default)
         where TResponse : class
         where TRequest : class
     {
@@ -406,23 +388,9 @@ public sealed class LightClient : ILightClient
         return SendAsync<string>(request._httpRequest, cancellationToken);
     }
 
-    public Task<(string?, HttpStatusCode)> SendAsync(in HttpRequestMessage request,
-                                                 CancellationToken cancellationToken = default)
-    {
-        return SendAsync<string>(request, cancellationToken);
-    }
-
     public Task<(TResponse?, HttpStatusCode)> SendAsync<TResponse>(in HttpRequest request, CancellationToken cancellationToken = default) where TResponse : class
     {
         return SendAsync<TResponse>(request._httpRequest, cancellationToken);
-    }
-
-    public async Task<(TResponse?, HttpStatusCode)> SendAsync<TResponse>(HttpRequestMessage request,
-                                                                         CancellationToken cancellationToken = default) where TResponse : class
-    {
-        using var response = await _client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-        if (_ensure) response.EnsureSuccessStatusCode();
-        return (await ReadContentAsync<TResponse>(response, cancellationToken).ConfigureAwait(false), response.StatusCode);
     }
 
     #endregion
@@ -460,6 +428,14 @@ public sealed class LightClient : ILightClient
     public void CancelPendingRequests()
     {
         _client.CancelPendingRequests();
+    }
+
+    private async Task<(TResponse?, HttpStatusCode)> SendAsync<TResponse>(HttpRequestMessage request,
+                                                                     CancellationToken cancellationToken = default) where TResponse : class
+    {
+        using var response = await _client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        if (EnsureSuccess) response.EnsureSuccessStatusCode();
+        return (await ReadContentAsync<TResponse>(response, cancellationToken).ConfigureAwait(false), response.StatusCode);
     }
 
     private Task<(TResponse?, HttpStatusCode)> SendAsync<TResponse, TRequest>(in string url,
@@ -522,11 +498,14 @@ public sealed class LightClient : ILightClient
         var httpRequest = new HttpRequestMessage
         {
             Method = method,
+#if !NETSTANDARD2_0
+            Version = _client.DefaultRequestVersion,            
+#endif
         };
 
         if (body is not null)
         {
-            httpRequest.Content = new StringContent(JsonHelper.Serialize(body, _serializerOptions), _encoding, _mediaType);
+            httpRequest.Content = new StringContent(JsonHelper.Serialize(body, SerializerOptions), Encoding, MediaType);
         }
         return httpRequest;
     }
@@ -540,7 +519,7 @@ public sealed class LightClient : ILightClient
     {
         var typeT = typeof(TResponse);
 
-        if (response.Content is null)
+        if (response.Content == null)
         {
             return default;
         }
@@ -562,7 +541,7 @@ public sealed class LightClient : ILightClient
 
         try
         {
-            return await HttpContentHelper.ReadAsJsonAsync<TResponse>(response.Content, _serializerOptions, cancellationToken).ConfigureAwait(false);
+            return await HttpContentHelper.ReadAsJsonAsync<TResponse>(response.Content, SerializerOptions, cancellationToken).ConfigureAwait(false);
         }
         catch (JsonException ex)
         {

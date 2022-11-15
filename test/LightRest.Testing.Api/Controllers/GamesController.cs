@@ -27,6 +27,18 @@ public class GamesController : ControllerBase
         return _games[id - 1];
     }
 
+    [HttpGet]
+    public Game Fetch()
+    {
+        return _games.FirstOrDefault();
+    }
+
+    [HttpGet("return-body")]
+    public Game GetReturnBody([FromBody] Game game)
+    {
+        return game;
+    }
+
     [HttpPost]
     public Game Post([FromBody] Game game)
     {
@@ -35,6 +47,17 @@ public class GamesController : ControllerBase
         return game;
     }
 
+    [HttpPost("return-body")]
+    public Game PostReturnBody([FromBody] Game game)
+    {
+        return game;
+    }
+
+    [HttpPut("return-body")]
+    public Game PutReturnBody([FromBody] Game game)
+    {
+        return game;
+    }
 
     [HttpPut("{id}")]
     public Game Put([FromBody] Game game, [FromRoute] int id)
@@ -55,11 +78,30 @@ public class GamesController : ControllerBase
         return removed;
     }
 
+    [HttpDelete("return-body")]
+    public Game DeleteReturnBody([FromBody] Game game)
+    {
+        return game;
+    }
+    
+    [HttpHead("return-body")]
+    public Game HeadReturnBody([FromBody] Game game)
+    {
+        return game;
+    }
+
     [HttpPatch]
     [Route("{id:int}")]
     public Game Patch(int id)
     {
         return _games[id - 1];
+    }
+
+    [HttpPatch]
+    [Route("return-body")]
+    public Game PatchReturnBody([FromBody] Game game)
+    {
+        return game;
     }
 
     [HttpHead("{id}")]
