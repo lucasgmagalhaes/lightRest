@@ -45,7 +45,7 @@ The print above shows the implementation used for `HttpClient`:
 <div align="center">
   <br />
   <p>
-    <img width="400" height="400" src="https://github.com/lucasgmagalhaes/lightRest/blob/70b1e349bb2b5564d33efa2659d0f384c92f2d27/assets/http_benchmark_code.png" />
+    <img width="600" height="300" src="https://github.com/lucasgmagalhaes/lightRest/blob/70b1e349bb2b5564d33efa2659d0f384c92f2d27/assets/http_benchmark_code.png" />
   </p>
 </div>
 
